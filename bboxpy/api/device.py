@@ -47,6 +47,7 @@ class Device:
 
     async def async_optimization(self, flag: bool):
         """Fetch data information."""
+        flag = 1 if flag else 0
         return await self.async_request(
             "put", "v1/device/optimization", {"boolean": flag}
         )
