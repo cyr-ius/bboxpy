@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import socket
 from typing import Any
 
@@ -10,6 +11,8 @@ import aiohttp
 import async_timeout
 
 from .exceptions import HttpRequestError, ServiceNotFoundError, TimeoutExceededError
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class BboxRequests:
@@ -41,7 +44,8 @@ class BboxRequests:
         """Request url with method."""
         try:
             url = f"{self._url}/{url}"
-            if method == "POST":
+            _LOGGER.debug("%s %s %s", method, url, data)
+            if method == "post":
                 token = await self.async_get_token()
                 url = f"{url}?btoken={token}"
 
@@ -72,9 +76,13 @@ class BboxRequests:
             raise ServiceNotFoundError(response.status, contents.decode("utf8"))
 
         if "application/json" in content_type:
-            return await response.json()
+            result = await response.json()
+            _LOGGER.debug(result)
+            return result
 
-        return await response.text()
+        result = await response.text()
+        _LOGGER.debug(result)
+        return result
 
     async def async_auth(self) -> aiohttp.ClientResponse:
         """Request authentification."""
