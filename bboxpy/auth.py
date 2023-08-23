@@ -39,18 +39,22 @@ class BboxRequests:
         method: str,
         url: str,
         data: Any | None = None,
+        retry: bool = False,
         **kwargs: Any,
     ) -> Any:
         """Request url with method."""
         try:
-            url = f"{self._url}/{url}"
-            _LOGGER.debug("%s %s %s", method, url, data)
+            full_url = f"{self._url}/{url}"
+            _LOGGER.debug("%s %s %s", method, full_url, data)
             if method == "post":
                 token = await self.async_get_token()
                 url = f"{url}?btoken={token}"
 
             async with async_timeout.timeout(self._timeout):
-                response = await self._session.request(method, url, data=data, **kwargs)
+                response = await self._session.request(
+                    method, full_url, data=data, **kwargs
+                )
+
         except (asyncio.CancelledError, asyncio.TimeoutError) as error:
             raise TimeoutExceededError(
                 "Timeout occurred while connecting to Bbox."
@@ -64,7 +68,7 @@ class BboxRequests:
         if response.status // 100 in [4, 5]:
             if response.status == 401 and self.needs_auth:
                 await self.async_auth()
-                if kwargs.get("retry", False) is False:
+                if retry is False:
                     return await self.async_request(
                         method, url, data, retry=True, **kwargs
                     )
@@ -103,5 +107,5 @@ class BboxRequests:
 
     async def async_get_token(self) -> str:
         """Request token."""
-        result = await self.async_request("GET", "v1/device/token")
+        result = await self.async_request("get", "v1/device/token")
         return result["device"]["token"]
