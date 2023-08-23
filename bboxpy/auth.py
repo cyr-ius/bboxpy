@@ -23,13 +23,13 @@ class BboxRequests:
         session: aiohttp.ClientSession = None,
     ) -> None:
         """Initialize."""
-        self.hostname = hostname or "https://mabbox.bytel.fr"
+        self.hostname = hostname or "mabbox.bytel.fr"
         self.password = password
         self.needs_auth = self.password is not None
 
         self._session = session or aiohttp.ClientSession()
         self._timeout = timeout
-        self._url = f"{self.hostname}/api"
+        self._url = f"https://{self.hostname}/api"
 
     async def async_request(
         self,
