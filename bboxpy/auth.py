@@ -62,7 +62,7 @@ class BboxRequests:
 
         content_type = response.headers.get("Content-Type", "")
         if response.status // 100 in [4, 5]:
-            if response.status_code == 401 and self.needs_auth:
+            if response.status == 401 and self.needs_auth:
                 await self.async_auth()
                 if kwargs.get("retry", False) is False:
                     return await self.async_request(
