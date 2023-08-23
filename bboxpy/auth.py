@@ -64,8 +64,10 @@ class BboxRequests:
         if response.status // 100 in [4, 5]:
             if response.status_code == 401 and self.needs_auth:
                 await self.async_auth()
-                if kwargs.get("retry") is False:
-                    await self.async_request(method, url, data, retry=True, **kwargs)
+                if kwargs.get("retry", False) is False:
+                    return await self.async_request(
+                        method, url, data, retry=True, **kwargs
+                    )
 
             contents = await response.read()
             response.close()
@@ -94,12 +96,10 @@ class BboxRequests:
             result = await self._session.request(
                 "post", f"{self._url}/apiv1/login", data={"password": self.password}
             )
-            if result.status_code != 200:
+            if result.status != 200:
                 result.raise_for_status()
         except (aiohttp.ClientError, socket.gaierror) as error:
             raise HttpRequestError("Error occurred while authentification.") from error
-        finally:
-            await self._session.close()
 
     async def async_get_token(self) -> str:
         """Request token."""
