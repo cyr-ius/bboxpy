@@ -77,10 +77,12 @@ class BboxRequests:
 
         if "application/json" in content_type:
             result = await response.json()
+            _LOGGER.debug("Json mode")
             _LOGGER.debug(result)
             return result
 
         result = await response.text()
+        _LOGGER.debug("Text mode")
         _LOGGER.debug(result)
         return result
 
