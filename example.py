@@ -27,6 +27,21 @@ async def async_main() -> None:
     try:
         device_info = await bbox.device.async_get_bbox_info()
         logger.info(device_info)
+        iptv_info = await bbox.iptv.async_get_iptv_info()
+        logger.info(iptv_info)
+        ddns_info = await bbox.ddns.async_get_ddns()
+        logger.info(ddns_info)
+        devices = await bbox.lan.async_get_connected_devices()
+        logger.info(devices)
+        voicemail = await bbox.voip.async_get_voip_voicemail()
+        logger.info(voicemail)
+        ftth = await bbox.wan.async_get_wan_ftth()
+        logger.info(ftth)
+
+        # Actions
+        await bbox.device.async_display(luminosity=50)
+        # await bbox.device.async_reboot()
+
     except BboxException as error:
         logger.error(error)
 
