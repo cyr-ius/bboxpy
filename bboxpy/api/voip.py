@@ -17,6 +17,6 @@ class VOIP:
         """Fetch data information."""
         return await self.async_request("get", "v1/voip/callforward")
 
-    async def async_del_voip_calllog_by_id(self, id: int):
+    async def async_del_voip_calllog_by_id(self, by_id: int):
         """Fetch data information."""
-        return await self.async_request("delete", f"v1/voip/calllog/{id}")
+        return await self.async_request("delete", f"v1/voip/calllog/{by_id}")

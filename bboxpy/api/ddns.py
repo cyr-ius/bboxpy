@@ -13,6 +13,6 @@ class Ddns:
         """Fetch data information."""
         return await self.async_request("get", "v1/dyndns")
 
-    async def async_get_ddns_by_id(self, id: int):
+    async def async_get_ddns_by_id(self, by_id: int):
         """Fetch data information."""
-        return await self.async_request("get", f"v1/dyndns/{id}")
+        return await self.async_request("get", f"v1/dyndns/{by_id}")
