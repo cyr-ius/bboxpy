@@ -20,6 +20,7 @@ class Bbox(BboxRequests):
     ) -> None:
         """Initialize."""
         super().__init__(hostname, password, timeout, session)
+        self._load_modules()
 
     def _load_modules(self) -> None:
         """Instantiate modules."""
@@ -31,7 +32,6 @@ class Bbox(BboxRequests):
         """Login."""
         try:
             await self.async_auth()
-            self._load_modules()
         except BboxException as error:
             raise (error) from error
 
