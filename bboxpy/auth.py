@@ -94,7 +94,7 @@ class BboxRequests:
             raise RuntimeError("No password provided!")
         try:
             result = await self._session.request(
-                "post", f"{self._url}/apiv1/login", data={"password": self.password}
+                "post", f"{self._url}/v1/login", data={"password": self.password}
             )
             if result.status != 200:
                 result.raise_for_status()
