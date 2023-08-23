@@ -30,7 +30,7 @@ class Bbox(BboxRequests):
     async def async_login(self):
         """Login."""
         try:
-            # await self.async_auth()
+            await self.async_auth()
             self._load_modules()
         except BboxException as error:
             raise (error) from error
