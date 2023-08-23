@@ -4,7 +4,7 @@ import asyncio
 import logging
 
 from bboxpy import Bbox
-from bboxpy.exceptions import AuthorizationError, BboxException
+from bboxpy.exceptions import AuthorizationError, HttpRequestError, BboxException
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -20,7 +20,7 @@ async def async_main() -> None:
     bbox = Bbox(password="xxxxx")
     try:
         await bbox.async_login()
-    except AuthorizationError as err:
+    except (AuthorizationError, HttpRequestError) as err:
         logger.error(err)
         return
 
