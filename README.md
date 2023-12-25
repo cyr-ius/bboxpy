@@ -24,7 +24,6 @@ $ git clone https://github.com/cyr-ius/bboxpy.git
 $ python setup.py install
 ```
 
-
 ## Get started
 
 ```python

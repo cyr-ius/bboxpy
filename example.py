@@ -4,7 +4,7 @@ import asyncio
 import logging
 
 from bboxpy import Bbox
-from bboxpy.exceptions import AuthorizationError, HttpRequestError, BboxException
+from bboxpy.exceptions import AuthorizationError, BboxException, HttpRequestError
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)

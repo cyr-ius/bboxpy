@@ -16,7 +16,7 @@ jobs:
     environment: release
     permissions:
       # IMPORTANT: this permission is mandatory for trusted publishing
-      id-token: write    
+      id-token: write
     steps:
       - name: 📥 Checkout the repository
         uses: actions/checkout@v4
@@ -41,6 +41,6 @@ jobs:
         shell: bash
         run: |
           python3 -m build
-  
+
       - name: 🚀 Publish to PyPi
         uses: pypa/gh-action-pypi-publish@release/v1

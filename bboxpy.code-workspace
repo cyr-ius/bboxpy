@@ -5,7 +5,7 @@
     }
   ],
   "settings": {
-      "python.linting.flake8Enabled": true,
+    "python.linting.flake8Enabled": true,
     "python.linting.flake8Args": [
       "--ignore=E501,W504,E712,W503,E203,E226,E231"
     ],

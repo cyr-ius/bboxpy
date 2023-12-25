@@ -1,9 +1,9 @@
 """Provides API access to Bouygues Bbox."""
-from .device import Device
-from .lan import Lan
-from .wan import Wan
 from .ddns import Ddns
-from .voip import VOIP
+from .device import Device
 from .iptv import IPTv
+from .lan import Lan
+from .voip import VOIP
+from .wan import Wan
 
 __all__ = ["Device", "Lan", "Wan", "VOIP", "IPTv", "Ddns"]
