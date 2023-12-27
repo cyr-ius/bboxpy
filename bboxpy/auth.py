@@ -93,7 +93,7 @@ class BboxRequests:
         return result
 
     async def async_auth(self) -> aiohttp.ClientResponse:
-        """Request authentification."""
+        """Request authentication."""
         if not self.password:
             raise RuntimeError("No password provided!")
         try:
@@ -103,7 +103,7 @@ class BboxRequests:
             if result.status != 200:
                 result.raise_for_status()
         except (aiohttp.ClientError, socket.gaierror) as error:
-            raise HttpRequestError("Error occurred while authentification.") from error
+            raise HttpRequestError("Error occurred while authentication.") from error
 
     async def async_get_token(self) -> str:
         """Request token."""

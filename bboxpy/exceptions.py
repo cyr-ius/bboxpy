@@ -6,7 +6,7 @@ class BboxException(Exception):
 
 
 class AuthorizationError(BboxException):
-    """Authentification error."""
+    """Authentication error."""
 
 
 class HttpRequestError(BboxException):
