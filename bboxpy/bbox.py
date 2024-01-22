@@ -17,9 +17,10 @@ class Bbox(BboxRequests):
         password: str = None,
         timeout: int = 120,
         session=None,
+        use_tls: bool = True,
     ) -> None:
         """Initialize."""
-        super().__init__(hostname, password, timeout, session)
+        super().__init__(hostname, password, timeout, session, use_tls)
         self._load_modules()
 
     def _load_modules(self) -> None:

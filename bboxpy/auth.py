@@ -24,6 +24,7 @@ class BboxRequests:
         password: str = None,
         timeout: str = 120,
         session: aiohttp.ClientSession = None,
+        use_tls: bool = True,
     ) -> None:
         """Initialize."""
         self.hostname = hostname or "mabbox.bytel.fr"
@@ -32,7 +33,8 @@ class BboxRequests:
 
         self._session = session or aiohttp.ClientSession()
         self._timeout = timeout
-        self._url = f"https://{self.hostname}/api"
+        scheme = "https" if use_tls else "http"
+        self._url = f"{scheme}://{self.hostname}/api"
 
     async def async_request(
         self,
