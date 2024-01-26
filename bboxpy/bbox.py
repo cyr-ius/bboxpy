@@ -2,10 +2,11 @@
 from __future__ import annotations
 
 import inspect
+from typing import Self
 
 from . import api as Api
 from .auth import BboxRequests
-from .exceptions import BboxException
+from .exceptions import AuthorizationError, BboxException
 
 
 class Bbox(BboxRequests):
@@ -29,13 +30,22 @@ class Bbox(BboxRequests):
             if inspect.isclass(obj):
                 setattr(self, name.lower(), obj(self.async_request))
 
-    async def async_login(self):
+    async def async_login(self) -> None:
         """Login."""
         try:
             await self.async_auth()
         except BboxException as error:
-            raise (error) from error
+            raise AuthorizationError(error) from error
 
-    async def async_logout(self):
+    async def async_logout(self) -> None:
         """Login."""
         await self.async_request("post", "v1/logout")
+
+    async def __aenter__(self) -> Self:
+        """Async enter."""
+        return self
+
+    async def __aexit__(self, *_exc_info: object) -> None:
+        """Async exit."""
+        if self._session:
+            await self._session.close()
