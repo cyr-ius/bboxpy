@@ -34,28 +34,26 @@ class BboxRequests:
         self._session = session or aiohttp.ClientSession()
         self._timeout = timeout
         scheme = "https" if use_tls else "http"
-        self._url = f"{scheme}://{self.hostname}/api"
+        self._uri = f"{scheme}://{self.hostname}/api"
 
     async def async_request(
         self,
         method: str,
-        url: str,
+        service: str,
         data: Any | None = None,
         retry: bool = False,
         **kwargs: Any,
     ) -> Any:
         """Request url with method."""
         try:
-            full_url = f"{self._url}/{url}"
-            _LOGGER.debug("%s %s %s", method, full_url, data)
+            url = f"{self._uri}/{service}"
+            _LOGGER.debug("%s %s %s", method, url, data)
             if method == "post":
                 token = await self.async_get_token()
                 url = f"{url}?btoken={token}"
 
             async with async_timeout.timeout(self._timeout):
-                response = await self._session.request(
-                    method, full_url, data=data, **kwargs
-                )
+                response = await self._session.request(method, url, data=data, **kwargs)
 
         except (asyncio.CancelledError, asyncio.TimeoutError) as error:
             raise TimeoutExceededError(
