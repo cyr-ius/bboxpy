@@ -38,7 +38,7 @@ class Bbox(BboxRequests):
             raise AuthorizationError(error) from error
 
     async def async_logout(self) -> None:
-        """Login."""
+        """Logout."""
         await self.async_request("post", "v1/logout")
 
     async def __aenter__(self) -> Self:
