@@ -1,4 +1,5 @@
 """Wan."""
+
 from __future__ import annotations
 
 

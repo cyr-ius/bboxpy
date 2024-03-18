@@ -1,4 +1,5 @@
 """Provides API access to Bouygues Bbox."""
+
 from .ddns import Ddns
 from .device import Device
 from .iptv import IPTv

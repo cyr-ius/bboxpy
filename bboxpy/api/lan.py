@@ -1,4 +1,5 @@
 """Lan."""
+
 from __future__ import annotations
 
 
