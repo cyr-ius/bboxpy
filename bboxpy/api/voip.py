@@ -1,4 +1,5 @@
 """VOIP."""
+
 from __future__ import annotations
 
 

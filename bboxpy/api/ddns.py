@@ -1,4 +1,5 @@
 """Dynamic DNS."""
+
 from __future__ import annotations
 
 

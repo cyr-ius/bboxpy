@@ -1,4 +1,5 @@
 """Provides authentication and raw access to Bouygues Bbox."""
+
 from .bbox import Bbox
 from .exceptions import (
     AuthorizationError,
