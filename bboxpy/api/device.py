@@ -2,62 +2,64 @@
 
 from __future__ import annotations
 
+from typing import Any, Callable
+
 
 class Device:
     """Device information."""
 
-    def __init__(self, request):
+    def __init__(self, request: Callable[..., Any]) -> None:
         """Initialize."""
         self.async_request = request
 
-    async def async_get_bbox_info(self):
+    async def async_get_bbox_info(self) -> Any:
         """Fetch data information."""
         return await self.async_request("get", "v1/device")
 
-    async def async_get_bbox_cpu(self):
+    async def async_get_bbox_cpu(self) -> Any:
         """Fetch data information."""
         return await self.async_request("get", "v1/device/cpu")
 
-    async def async_get_bbox_led(self):
+    async def async_get_bbox_led(self) -> Any:
         """Fetch data information."""
         return await self.async_request("get", "v1/device/led")
 
-    async def async_get_bbox_mem(self):
+    async def async_get_bbox_mem(self) -> Any:
         """Fetch data information."""
         return await self.async_request("get", "v1/device/mem")
 
-    async def async_get_bbox_summary(self):
+    async def async_get_bbox_summary(self) -> Any:
         """Fetch data information."""
         return await self.async_request("get", "v1/device/summary")
 
-    async def async_get_bbox_token(self):
+    async def async_get_bbox_token(self) -> Any:
         """Fetch data information."""
         return await self.async_request("get", "v1/device/token")
 
-    async def async_get_bbox_log(self):
+    async def async_get_bbox_log(self) -> Any:
         """Fetch data information."""
         return await self.async_request("get", "v1/device/log")
 
-    async def async_reboot(self):
+    async def async_reboot(self) -> None:
         """Fetch data information."""
-        return await self.async_request("post", "v1/device/reboot")
+        await self.async_request("post", "v1/device/reboot")
 
-    async def async_reset(self):
+    async def async_reset(self) -> None:
         """Fetch data information."""
-        return await self.async_request("post", "v1/device/factory")
+        await self.async_request("post", "v1/device/factory")
 
-    async def async_optimization(self, flag: bool):
+    async def async_optimization(self, flag: bool) -> None:
         """Fetch data information."""
-        flag = 1 if flag else 0
-        return await self.async_request(
-            "put", "v1/device/optimization", {"boolean": flag}
-        )
+        int_flag = 1 if flag else 0
+        await self.async_request("put", "v1/device/optimization", {"boolean": int_flag})
 
-    async def async_display(self, luminosity: int = None, orientation: int = None):
+    async def async_display(
+        self, luminosity: int | None = None, orientation: int | None = None
+    ) -> None:
         """Fetch data information."""
         data = {}
         if luminosity:
             data.update({"luminosity": luminosity})
         if orientation:
             data.update({"orientation": orientation})
-        return await self.async_request("post", "v1/device/display", data)
+        await self.async_request("post", "v1/device/display", data)

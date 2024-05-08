@@ -6,7 +6,7 @@ import asyncio
 import json
 import logging
 import socket
-from typing import Any
+from typing import Any, cast
 
 import aiohttp
 import async_timeout
@@ -21,9 +21,9 @@ class BboxRequests:
 
     def __init__(
         self,
-        hostname: str = None,
-        password: str = None,
-        timeout: str = 120,
+        hostname: str,
+        password: str,
+        timeout: int = 120,
         session: aiohttp.ClientSession = None,
         use_tls: bool = True,
     ) -> None:
@@ -84,12 +84,10 @@ class BboxRequests:
 
         if "application/json" in content_type:
             result = await response.json()
-            _LOGGER.debug("Json mode")
             _LOGGER.debug(result)
             return result
 
         result = await response.text()
-        _LOGGER.debug("Text mode")
         _LOGGER.debug(result)
         return result
 
@@ -99,7 +97,7 @@ class BboxRequests:
             raise RuntimeError("No password provided!")
         try:
             result = await self._session.request(
-                "post", f"{self._url}/v1/login", data={"password": self.password}
+                "post", f"{self._uri}/v1/login", data={"password": self.password}
             )
             if result.status != 200:
                 result.raise_for_status()
@@ -109,4 +107,4 @@ class BboxRequests:
     async def async_get_token(self) -> str:
         """Request token."""
         result = await self.async_request("get", "v1/device/token")
-        return result["device"]["token"]
+        return cast(str, result["device"]["token"])

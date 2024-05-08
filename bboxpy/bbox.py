@@ -5,6 +5,8 @@ from __future__ import annotations
 import inspect
 from typing import Self
 
+import aiohttp
+
 from . import api as Api
 from .auth import BboxRequests
 from .exceptions import AuthorizationError, BboxException
@@ -15,10 +17,10 @@ class Bbox(BboxRequests):
 
     def __init__(
         self,
-        hostname: str = None,
-        password: str = None,
+        hostname: str,
+        password: str,
         timeout: int = 120,
-        session=None,
+        session: aiohttp.ClientSession | None = None,
         use_tls: bool = True,
     ) -> None:
         """Initialize."""
