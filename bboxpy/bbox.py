@@ -17,8 +17,8 @@ class Bbox(BboxRequests):
 
     def __init__(
         self,
-        hostname: str,
         password: str,
+        hostname: str = "mabbox.bytel.fr",
         timeout: int = 120,
         session: aiohttp.ClientSession | None = None,
         use_tls: bool = True,

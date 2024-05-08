@@ -21,14 +21,14 @@ class BboxRequests:
 
     def __init__(
         self,
-        hostname: str,
         password: str,
+        hostname: str = "mabbox.bytel.fr",
         timeout: int = 120,
         session: aiohttp.ClientSession = None,
         use_tls: bool = True,
     ) -> None:
         """Initialize."""
-        self.hostname = hostname or "mabbox.bytel.fr"
+        self.hostname = hostname
         self.password = password
         self.needs_auth = self.password is not None
 

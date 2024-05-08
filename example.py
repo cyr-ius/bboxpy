@@ -15,6 +15,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
+# mypy: disable-error-code="attr-defined"
 async def async_main() -> None:
     """Instantiate Livebox class."""
     bbox = Bbox(password="xxxxx")
