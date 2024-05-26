@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 import inspect
-from typing import Self
 
-import aiohttp
+from aiohttp import ClientSession
 
 from . import api as Api
 from .auth import BboxRequests
@@ -20,7 +19,7 @@ class Bbox(BboxRequests):
         password: str,
         hostname: str = "mabbox.bytel.fr",
         timeout: int = 120,
-        session: aiohttp.ClientSession | None = None,
+        session: ClientSession = ClientSession(),
         use_tls: bool = True,
     ) -> None:
         """Initialize."""
@@ -42,13 +41,17 @@ class Bbox(BboxRequests):
 
     async def async_logout(self) -> None:
         """Logout."""
-        await self.async_request("post", "v1/logout")
+        await self.async_request("logout", "post")
 
-    async def __aenter__(self) -> Self:
-        """Async enter."""
+    async def async_close(self) -> None:
+        """Close the session."""
+        if self._session:
+            await self._session.close()
+
+    async def __aenter__(self) -> Bbox:
+        """Asynchronous enter."""
         return self
 
     async def __aexit__(self, *_exc_info: object) -> None:
         """Async exit."""
-        if self._session:
-            await self._session.close()
+        await self.async_close()

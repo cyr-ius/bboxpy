@@ -15,4 +15,4 @@ class IPTv:
 
     async def async_get_iptv_info(self) -> Any:
         """Fetch data information."""
-        return await self.async_request("get", "v1/iptv")
+        return await self.async_request("iptv")

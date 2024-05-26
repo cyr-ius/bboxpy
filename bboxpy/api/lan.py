@@ -15,16 +15,16 @@ class Lan:
 
     async def async_get_connected_devices(self) -> Any:
         """Fetch data information."""
-        return await self.async_request("get", "v1/hosts")
+        return await self.async_request("hosts")
 
     async def async_get_ip_infos(self) -> Any:
         """Fetch data information."""
-        return await self.async_request("get", "v1/lan/ip")
+        return await self.async_request("lan/ip")
 
     async def async_get_lan_stats(self) -> Any:
         """Fetch data information."""
-        return await self.async_request("get", "v1/lan/stats")
+        return await self.async_request("lan/stats")
 
     async def async_get_device_infos(self) -> Any:
         """Fetch data information."""
-        return await self.async_request("get", "v1/hosts/me")
+        return await self.async_request("hosts/me")

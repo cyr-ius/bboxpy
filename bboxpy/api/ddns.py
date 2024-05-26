@@ -15,8 +15,8 @@ class Ddns:
 
     async def async_get_ddns(self) -> Any:
         """Fetch data information."""
-        return await self.async_request("get", "v1/dyndns")
+        return await self.async_request("dyndns")
 
     async def async_get_ddns_by_id(self, by_id: int) -> Any:
         """Fetch data information."""
-        return await self.async_request("get", f"v1/dyndns/{by_id}")
+        return await self.async_request(f"dyndns/{by_id}")

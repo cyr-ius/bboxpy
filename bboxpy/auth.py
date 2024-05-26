@@ -8,8 +8,7 @@ import logging
 import socket
 from typing import Any, cast
 
-import aiohttp
-import async_timeout
+from aiohttp import ClientError, ClientResponse, ClientResponseError, ClientSession
 
 from .exceptions import HttpRequestError, ServiceNotFoundError, TimeoutExceededError
 
@@ -24,87 +23,59 @@ class BboxRequests:
         password: str,
         hostname: str = "mabbox.bytel.fr",
         timeout: int = 120,
-        session: aiohttp.ClientSession = None,
+        session: ClientSession = None,
         use_tls: bool = True,
     ) -> None:
         """Initialize."""
-        self.hostname = hostname
         self.password = password
-        self.needs_auth = self.password is not None
-
-        self._session = session or aiohttp.ClientSession()
+        self._session = session
         self._timeout = timeout
         scheme = "https" if use_tls else "http"
-        self._uri = f"{scheme}://{self.hostname}/api"
+        self._uri = f"{scheme}://{hostname}/api/v1"
 
-    async def async_request(
-        self,
-        method: str,
-        service: str,
-        data: Any | None = None,
-        retry: bool = False,
-        **kwargs: Any,
-    ) -> Any:
+    async def async_request(self, path: str, method: str = "get", **kwargs: Any) -> Any:
         """Request url with method."""
         try:
-            url = f"{self._uri}/{service}"
-            _LOGGER.debug("%s %s %s", method, url, data)
-            if method == "post":
+            url = f"{self._uri}/{path}"
+
+            if path not in ["login", "device/token"]:
                 token = await self.async_get_token()
                 url = f"{url}?btoken={token}"
 
-            async with async_timeout.timeout(self._timeout):
-                response = await self._session.request(method, url, data=data, **kwargs)
+            async with asyncio.timeout(self._timeout):
+                _LOGGER.debug("Request: %s (%s) - %s", url, method, kwargs.get("json"))
+                response = await self._session.request(method, url, **kwargs)
 
         except (asyncio.CancelledError, asyncio.TimeoutError) as error:
             raise TimeoutExceededError(
                 "Timeout occurred while connecting to Bbox."
             ) from error
-        except (aiohttp.ClientError, socket.gaierror) as error:
-            raise HttpRequestError(
-                "Error occurred while communicating with Bbox router."
-            ) from error
-
-        content_type = response.headers.get("Content-Type", "")
-        if response.status // 100 in [4, 5]:
-            if response.status == 401 and self.needs_auth:
-                await self.async_auth()
-                if retry is False:
-                    return await self.async_request(
-                        method, url, data, retry=True, **kwargs
-                    )
-
+        except ClientResponseError:
             contents = await response.read()
             response.close()
-            if content_type == "application/json":
+            if response.headers.get("Content-Type") == "application/json":
                 raise ServiceNotFoundError(
                     response.status, json.loads(contents.decode("utf8"))
                 )
             raise ServiceNotFoundError(response.status, contents.decode("utf8"))
+        except (ClientError, socket.gaierror) as error:
+            raise HttpRequestError(
+                "Error occurred while communicating with Bbox router."
+            ) from error
 
-        if "application/json" in content_type:
-            result = await response.json()
-            _LOGGER.debug(result)
-            return result
+        return (
+            await response.json()
+            if "application/json" in response.headers.get("Content-Type")
+            else await response.text()
+        )
 
-        result = await response.text()
-        _LOGGER.debug(result)
-        return result
-
-    async def async_auth(self) -> aiohttp.ClientResponse:
+    async def async_auth(self) -> ClientResponse:
         """Request authentication."""
         if not self.password:
             raise RuntimeError("No password provided!")
-        try:
-            result = await self._session.request(
-                "post", f"{self._uri}/v1/login", data={"password": self.password}
-            )
-            if result.status != 200:
-                result.raise_for_status()
-        except (aiohttp.ClientError, socket.gaierror) as error:
-            raise HttpRequestError("Error occurred while authentication.") from error
+        await self.async_request("login", "post", json={"password": self.password})
 
     async def async_get_token(self) -> str:
         """Request token."""
-        result = await self.async_request("get", "v1/device/token")
+        result = await self.async_request("device/token")
         return cast(str, result["device"]["token"])
