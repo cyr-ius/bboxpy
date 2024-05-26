@@ -45,15 +45,13 @@ class BboxRequests:
             async with asyncio.timeout(self._timeout):
                 _LOGGER.debug("Request: %s (%s) - %s", url, method, kwargs.get("json"))
                 response = await self._session.request(method, url, **kwargs)
-
+                contents = await response.read()
         except (asyncio.CancelledError, asyncio.TimeoutError) as error:
             raise TimeoutExceededError(
                 "Timeout occurred while connecting to Bbox."
             ) from error
         except ClientResponseError:
-            contents = await response.read()
-            response.close()
-            if response.headers.get("Content-Type") == "application/json":
+            if "application/json" in response.headers.get("Content-Type", ""):
                 raise ServiceNotFoundError(
                     response.status, json.loads(contents.decode("utf8"))
                 )
@@ -65,7 +63,7 @@ class BboxRequests:
 
         return (
             await response.json()
-            if "application/json" in response.headers.get("Content-Type")
+            if "application/json" in response.headers.get("Content-Type", "")
             else await response.text()
         )
 
