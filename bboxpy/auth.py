@@ -14,6 +14,8 @@ from .exceptions import HttpRequestError, ServiceNotFoundError, TimeoutExceededE
 
 _LOGGER = logging.getLogger(__name__)
 
+API_VERSION = "api/v1"
+
 
 class BboxRequests:
     """Class request."""
@@ -31,7 +33,7 @@ class BboxRequests:
         self._session = session
         self._timeout = timeout
         scheme = "https" if use_tls else "http"
-        self._uri = f"{scheme}://{hostname}/api/v1"
+        self._uri = f"{scheme}://{hostname}/{API_VERSION}"
 
     async def async_request(self, path: str, method: str = "get", **kwargs: Any) -> Any:
         """Request url with method."""
@@ -45,16 +47,15 @@ class BboxRequests:
             async with asyncio.timeout(self._timeout):
                 _LOGGER.debug("Request: %s (%s) - %s", url, method, kwargs.get("json"))
                 response = await self._session.request(method, url, **kwargs)
-                contents = await response.read()
+                contents = (await response.read()).decode("utf8")
         except (asyncio.CancelledError, asyncio.TimeoutError) as error:
             raise TimeoutExceededError(
                 "Timeout occurred while connecting to Bbox."
             ) from error
         except ClientResponseError:
-            message = contents.decode("utf8")
             if "application/json" in response.headers.get("Content-Type", ""):
-                raise ServiceNotFoundError(response.status, json.loads(message))
-            raise ServiceNotFoundError(response.status, message)
+                raise ServiceNotFoundError(response.status, json.loads(contents))
+            raise ServiceNotFoundError(response.status, contents)
         except (ClientError, socket.gaierror) as error:
             raise HttpRequestError(
                 "Error occurred while communicating with Bbox router."
