@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools","setuptools-scm","wheel"]
+requires = ["setuptools","setuptools-scm", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name        = "bboxpy"
-version     = "replace_by_workflow"
+dynamic     = ["version"]
 license     = {text = "GPL-3"}
 description = "Fetch data from bouygues bbox"
 readme      = "README.md"
@@ -38,10 +38,6 @@ include-package-data = true
 
 [tool.ruff.lint.flake8-pytest-style]
 fixture-parentheses = false
-
-[tool.ruff.lint.flake8-tidy-imports.banned-api]
-"async_timeout".msg = "use asyncio.timeout instead"
-"pytz".msg = "use zoneinfo instead"
 
 [tool.ruff.lint.isort]
 force-sort-within-sections = true
