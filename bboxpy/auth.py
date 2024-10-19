@@ -61,11 +61,33 @@ class BboxRequests:
                 "Error occurred while communicating with Bbox router."
             ) from error
 
-        return (
-            await response.json()
-            if "application/json" in response.headers.get("Content-Type", "")
-            else await response.text()
-        )
+        if "application/json" in response.headers.get("Content-Type", ""):
+            result = await response.json()
+            if (
+                response.status >= 400
+                and isinstance(result, dict)
+                and "exception" in result
+                and isinstance(result["exception"], dict)
+            ):
+                _LOGGER.error(
+                    "Bbox API throw an exception (domain: %s, code: %s): %s",
+                    result["exception"].get("domain", "unknown"),
+                    result["exception"].get("code", "unknown"),
+                    ", ".join(
+                        [
+                            (
+                                f"{error.get('name')}: {error.get('reason', 'unknown reason')}"
+                                if error.get("name")
+                                else error.get("reason", "unknown reason")
+                            )
+                            for error in result["exception"].get("errors", [])
+                        ]
+                    ),
+                )
+        else:
+            result = await response.text()
+        _LOGGER.debug("Result (%s): %s", response.status, result)
+        return result
 
     async def async_auth(self) -> ClientResponse:
         """Request authentication."""
