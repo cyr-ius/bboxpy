@@ -6,7 +6,8 @@ import asyncio
 import json
 import logging
 import socket
-from typing import Any, cast
+from typing import Any, cast, Optional
+from datetime import datetime
 
 from aiohttp import ClientError, ClientResponse, ClientResponseError, ClientSession
 
@@ -19,6 +20,9 @@ API_VERSION = "api/v1"
 
 class BboxRequests:
     """Class request."""
+
+    _authenticated: bool = False
+    _btoken: Optional[dict[str, Any]] = None
 
     def __init__(
         self,
@@ -76,9 +80,32 @@ class BboxRequests:
         """Request authentication."""
         if not self.password:
             raise RuntimeError("No password provided!")
-        await self.async_request("login", "post", json={"password": self.password})
+        if self._authenticated:
+            return True
+        await self.async_request(
+            "login", "post", data={"password": self.password, "remember": 1}
+        )
+        self._authenticated = True
 
     async def async_get_token(self) -> str:
         """Request token."""
+        if self._btoken:
+            if not self._btoken["expires"] < datetime.now().astimezone():
+                _LOGGER.debug(
+                    "Previously retrieved Bbox token always valid (expire on %s), use it",
+                    self._btoken["expires"],
+                )
+                return cast(str, self._btoken["token"])
+            _LOGGER.debug(
+                "Bbox token expired since %s, renewing it", self._btoken["expires"]
+            )
+
+        # Ensure we are authenticated
+        await self.async_auth()
+
         result = await self.async_request("device/token")
-        return cast(str, result["device"]["token"])
+        self._btoken = {
+            "token": result[0]["device"]["token"],
+            "expires": datetime.fromisoformat(result[0]["device"]["expires"]),
+        }
+        return cast(str, self._btoken["token"])
