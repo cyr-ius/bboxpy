@@ -52,14 +52,19 @@ class BboxRequests:
             raise TimeoutExceededError(
                 "Timeout occurred while connecting to Bbox."
             ) from error
-        except ClientResponseError:
-            if "application/json" in response.headers.get("Content-Type", ""):
-                raise ServiceNotFoundError(response.status, json.loads(contents))
-            raise ServiceNotFoundError(response.status, contents)
         except (ClientError, socket.gaierror) as error:
             raise HttpRequestError(
                 "Error occurred while communicating with Bbox router."
             ) from error
+
+        try:
+            response.raise_for_status()
+        except ClientResponseError as err:
+            if "application/json" in response.headers.get("Content-Type", ""):
+                raise ServiceNotFoundError(
+                    response.status, json.loads(contents)
+                ) from err
+            raise
 
         return (
             await response.json()
