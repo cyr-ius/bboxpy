@@ -13,6 +13,10 @@ class ParentalControl:
         """Initialize."""
         self.async_request = request
 
+    async def async_get_parental_control_service_state(self) -> Any:
+        """Get parental control service state."""
+        return await self.async_request("parentalcontrol")
+
     async def async_set_parental_control_service_state(self, enable: bool) -> Any:
         """Set parental control service state."""
         return await self.async_request(
