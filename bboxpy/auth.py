@@ -16,6 +16,7 @@ from .exceptions import HttpRequestError, ServiceNotFoundError, TimeoutExceededE
 _LOGGER = logging.getLogger(__name__)
 
 API_VERSION = "api/v1"
+TEMPORARY_ERROR_REASONS = ["Cannot extract request parameters"]
 
 
 class BboxRequests:
@@ -38,7 +39,14 @@ class BboxRequests:
         self._timeout = timeout or 120
         self._uri = f"http{'s' if use_tls else ''}://{hostname or 'mabbox.bytel.fr'}/{API_VERSION}"
 
-    async def async_request(self, path: str, method: str = "get", **kwargs: Any) -> Any:
+    async def async_request(
+        self,
+        path: str,
+        method: str = "get",
+        retry: int = 1,
+        retry_delay: int = 1,
+        **kwargs: Any,
+    ) -> Any:
         """Request url with method."""
         try:
             url = f"{self._uri}/{path}"
@@ -62,11 +70,48 @@ class BboxRequests:
 
         try:
             response.raise_for_status()
-        except ClientResponseError as err:
+        except ClientResponseError as error:
             if "application/json" in response.headers.get("Content-Type", ""):
-                raise ServiceNotFoundError(
-                    response.status, json.loads(contents)
-                ) from err
+                result = json.loads(contents)
+                if (
+                    response.status >= 400
+                    and isinstance(result, dict)
+                    and "exception" in result
+                    and isinstance(result["exception"], dict)
+                ):
+                    if retry:
+                        # Detect if it's a temporary error and retry in this case
+                        for err in result["exception"].get("errors", []):
+                            if err.get("reason") in TEMPORARY_ERROR_REASONS:
+                                _LOGGER.debug(
+                                    "Temporary error occurred calling Bbox API (%s), retry in %d seconds",
+                                    err.get("reason"),
+                                    retry_delay,
+                                )
+                                await asyncio.sleep(retry_delay)
+                                return await self.async_request(
+                                    path,
+                                    method=method,
+                                    retry=retry - 1,
+                                    retry_delay=retry_delay,
+                                    **kwargs,
+                                )
+                    _LOGGER.error(
+                        "Bbox API throw an exception (domain: %s, code: %s): %s",
+                        result["exception"].get("domain", "unknown"),
+                        result["exception"].get("code", "unknown"),
+                        ", ".join(
+                            [
+                                (
+                                    f"{err.get('name')}: {err.get('reason', 'unknown reason')}"
+                                    if err.get("name")
+                                    else err.get("reason", "unknown reason")
+                                )
+                                for err in result["exception"].get("errors", [])
+                            ]
+                        ),
+                    )
+                raise ServiceNotFoundError(response.status, result) from error
             raise
 
         return (
@@ -74,6 +119,13 @@ class BboxRequests:
             if "application/json" in response.headers.get("Content-Type", "")
             else await response.text()
         )
+        result = (
+            json.loads(contents)
+            if "application/json" in response.headers.get("Content-Type", "")
+            else contents
+        )
+        _LOGGER.debug("Result (%s): %s", response.status, result)
+        return result
 
     async def async_auth(self) -> ClientResponse:
         """Request authentication."""
