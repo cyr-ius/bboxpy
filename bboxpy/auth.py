@@ -7,6 +7,7 @@ import json
 import logging
 import socket
 from typing import Any, cast, Optional
+from datetime import datetime
 
 from aiohttp import ClientError, ClientResponse, ClientResponseError, ClientSession
 
@@ -19,6 +20,9 @@ API_VERSION = "api/v1"
 
 class BboxRequests:
     """Class request."""
+
+    _authenticated: bool = False
+    _btoken: Optional[dict[str, Any]] = None
 
     def __init__(
         self,
@@ -51,50 +55,56 @@ class BboxRequests:
             raise TimeoutExceededError(
                 "Timeout occurred while connecting to Bbox."
             ) from error
-        except ClientResponseError:
-            if "application/json" in response.headers.get("Content-Type", ""):
-                raise ServiceNotFoundError(response.status, json.loads(contents))
-            raise ServiceNotFoundError(response.status, contents)
         except (ClientError, socket.gaierror) as error:
             raise HttpRequestError(
                 "Error occurred while communicating with Bbox router."
             ) from error
 
-        if "application/json" in response.headers.get("Content-Type", ""):
-            result = await response.json()
-            if (
-                response.status >= 400
-                and isinstance(result, dict)
-                and "exception" in result
-                and isinstance(result["exception"], dict)
-            ):
-                _LOGGER.error(
-                    "Bbox API throw an exception (domain: %s, code: %s): %s",
-                    result["exception"].get("domain", "unknown"),
-                    result["exception"].get("code", "unknown"),
-                    ", ".join(
-                        [
-                            (
-                                f"{error.get('name')}: {error.get('reason', 'unknown reason')}"
-                                if error.get("name")
-                                else error.get("reason", "unknown reason")
-                            )
-                            for error in result["exception"].get("errors", [])
-                        ]
-                    ),
-                )
-        else:
-            result = await response.text()
-        _LOGGER.debug("Result (%s): %s", response.status, result)
-        return result
+        try:
+            response.raise_for_status()
+        except ClientResponseError as err:
+            if "application/json" in response.headers.get("Content-Type", ""):
+                raise ServiceNotFoundError(
+                    response.status, json.loads(contents)
+                ) from err
+            raise
+
+        return (
+            await response.json()
+            if "application/json" in response.headers.get("Content-Type", "")
+            else await response.text()
+        )
 
     async def async_auth(self) -> ClientResponse:
         """Request authentication."""
         if not self.password:
             raise RuntimeError("No password provided!")
-        await self.async_request("login", "post", json={"password": self.password})
+        if self._authenticated:
+            return True
+        await self.async_request(
+            "login", "post", data={"password": self.password, "remember": 1}
+        )
+        self._authenticated = True
 
     async def async_get_token(self) -> str:
         """Request token."""
+        if self._btoken:
+            if not self._btoken["expires"] < datetime.now().astimezone():
+                _LOGGER.debug(
+                    "Previously retrieved Bbox token always valid (expire on %s), use it",
+                    self._btoken["expires"],
+                )
+                return cast(str, self._btoken["token"])
+            _LOGGER.debug(
+                "Bbox token expired since %s, renewing it", self._btoken["expires"]
+            )
+
+        # Ensure we are authenticated
+        await self.async_auth()
+
         result = await self.async_request("device/token")
-        return cast(str, result["device"]["token"])
+        self._btoken = {
+            "token": result[0]["device"]["token"],
+            "expires": datetime.fromisoformat(result[0]["device"]["expires"]),
+        }
+        return cast(str, self._btoken["token"])
