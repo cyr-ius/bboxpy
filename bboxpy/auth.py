@@ -27,17 +27,16 @@ class BboxRequests:
     def __init__(
         self,
         password: str,
-        hostname: str = "mabbox.bytel.fr",
-        timeout: int = 120,
-        session: ClientSession = None,
+        hostname: Optional[str] = None,
+        timeout: Optional[int] = None,
+        session: Optional[ClientSession] = None,
         use_tls: bool = True,
     ) -> None:
         """Initialize."""
         self.password = password
-        self._session = session
-        self._timeout = timeout
-        scheme = "https" if use_tls else "http"
-        self._uri = f"{scheme}://{hostname}/{API_VERSION}"
+        self._session = session or ClientSession()
+        self._timeout = timeout or 120
+        self._uri = f"http{'s' if use_tls else ''}://{hostname or 'mabbox.bytel.fr'}/{API_VERSION}"
 
     async def async_request(self, path: str, method: str = "get", **kwargs: Any) -> Any:
         """Request url with method."""

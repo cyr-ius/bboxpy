@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import inspect
 
-from aiohttp import ClientSession
+from typing import Any
+
 
 from . import api as Api
 from .auth import BboxRequests
@@ -14,16 +15,10 @@ from .exceptions import AuthorizationError, BboxException
 class Bbox(BboxRequests):
     """API Bouygues Bbox router."""
 
-    def __init__(
-        self,
-        password: str,
-        hostname: str = "mabbox.bytel.fr",
-        timeout: int = 120,
-        session: ClientSession = ClientSession(),
-        use_tls: bool = True,
-    ) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize."""
-        super().__init__(hostname, password, timeout, session, use_tls)
+
+        super().__init__(*args, **kwargs)
         self._load_modules()
 
     def _load_modules(self) -> None:

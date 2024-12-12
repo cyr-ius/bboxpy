@@ -6,5 +6,6 @@ from .iptv import IPTv
 from .lan import Lan
 from .voip import VOIP
 from .wan import Wan
+from .parentalcontrol import ParentalControl
 
-__all__ = ["Device", "Lan", "Wan", "VOIP", "IPTv", "Ddns"]
+__all__ = ["Ddns", "Device", "IPTv", "Lan", "ParentalControl", "VOIP", "Wan"]
