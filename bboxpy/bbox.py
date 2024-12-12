@@ -17,6 +17,7 @@ class Bbox(BboxRequests):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize."""
+
         super().__init__(*args, **kwargs)
         self._load_modules()
 
