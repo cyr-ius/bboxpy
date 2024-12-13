@@ -2,23 +2,33 @@
 
 import asyncio
 import logging
+from typing import Any
+
+import yaml  # type: ignore
 
 from bboxpy import Bbox
 from bboxpy.exceptions import AuthorizationError, BboxException, HttpRequestError
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
-# create console handler and set level to debug
 ch = logging.StreamHandler()
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
+# Fill out the secrets in secrets.yaml, you can find an example
+# _secrets.yaml file, which has to be renamed after filling out the secrets.
+with open("./secrets.yaml", encoding="UTF-8") as file:
+    secrets: dict[str, Any] = yaml.safe_load(file)
+
+PASSWORD = secrets["PASSWORD"]  # mandatory
+
+
 # mypy: disable-error-code="attr-defined"
 async def async_main() -> None:
     """Instantiate Livebox class."""
-    bbox = Bbox(password="xxxxx")
+    bbox = Bbox(password=PASSWORD)
     try:
         await bbox.async_login()
     except (AuthorizationError, HttpRequestError) as err:
@@ -46,7 +56,10 @@ async def async_main() -> None:
     except BboxException as error:
         logger.error(error)
 
+    await bbox.async_close()
+
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(async_main())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    asyncio.run(async_main())
