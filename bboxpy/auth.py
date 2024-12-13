@@ -12,6 +12,7 @@ from typing import Any, Optional, cast
 from aiohttp import ClientError, ClientResponse, ClientResponseError, ClientSession
 
 from .exceptions import (
+    AuthorizationError,
     HttpRequestError,
     ServiceNotFoundError,
     TemporaryError,
@@ -73,6 +74,10 @@ class BboxRequests:
         except ClientResponseError as error:
             if "application/json" in response.headers.get("Content-Type", ""):
                 result = await response.json()
+                if response.status in [401, 429, 403]:
+                    raise AuthorizationError(
+                        f"Authorization failed ({response.status})"
+                    ) from error
                 if (
                     response.status >= 400
                     and isinstance(result, dict)
@@ -81,7 +86,7 @@ class BboxRequests:
                 ):
                     for err in result["exception"].get("errors", []):
                         if err.get("reason") in TEMPORARY_ERROR_REASONS:
-                            raise TemporaryError(result)
+                            raise TemporaryError(result) from error
                 raise ServiceNotFoundError(response.status, result) from error
             raise ServiceNotFoundError(response.status, contents) from error
         except (ClientError, socket.gaierror) as error:
