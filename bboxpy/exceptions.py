@@ -19,3 +19,7 @@ class TimeoutExceededError(BboxException):
 
 class ServiceNotFoundError(BboxException):
     """Service not found."""
+
+
+class TemporaryError(BboxException):
+    """Temporary error."""

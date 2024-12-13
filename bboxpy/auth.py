@@ -11,12 +11,20 @@ from typing import Any, Optional, cast
 
 from aiohttp import ClientError, ClientResponse, ClientResponseError, ClientSession
 
-from .exceptions import HttpRequestError, ServiceNotFoundError, TimeoutExceededError
+from .exceptions import (
+    HttpRequestError,
+    ServiceNotFoundError,
+    TemporaryError,
+    TimeoutExceededError,
+)
+from .helpers import retry
 
 _LOGGER = logging.getLogger(__name__)
 
 API_VERSION = "api/v1"
 TEMPORARY_ERROR_REASONS = ["Cannot extract request parameters"]
+DELAY = 1
+TRIES = 3
 
 
 class BboxRequests:
@@ -41,14 +49,8 @@ class BboxRequests:
         self._uri = f"http{'s' if use_tls else ''}://{hostname or 'mabbox.bytel.fr'}/{API_VERSION}"
         self._verify_ssl = verify_ssl
 
-    async def async_request(
-        self,
-        path: str,
-        method: str = "get",
-        retry: int = 1,
-        retry_delay: int = 1,
-        **kwargs: Any,
-    ) -> Any:
+    @retry(exceptions=TemporaryError, tries=TRIES, delay=DELAY, logger=_LOGGER)
+    async def async_request(self, path: str, method: str = "get", **kwargs: Any) -> Any:
         """Request url with method."""
         try:
             url = f"{self._uri}/{path}"
@@ -63,66 +65,30 @@ class BboxRequests:
                     method, url, verify_ssl=self._verify_ssl, **kwargs
                 )
                 contents = (await response.read()).decode("utf8")
+                response.raise_for_status()
         except (asyncio.CancelledError, asyncio.TimeoutError) as error:
             raise TimeoutExceededError(
                 "Timeout occurred while connecting to Bbox."
             ) from error
-        except (ClientError, socket.gaierror) as error:
-            raise HttpRequestError(
-                f"Error occurred while communicating with Bbox router. ({error})"
-            ) from error
-
-        try:
-            response.raise_for_status()
         except ClientResponseError as error:
             if "application/json" in response.headers.get("Content-Type", ""):
-                result = json.loads(contents)
+                result = await response.json()
                 if (
                     response.status >= 400
                     and isinstance(result, dict)
                     and "exception" in result
                     and isinstance(result["exception"], dict)
                 ):
-                    if retry:
-                        # Detect if it's a temporary error and retry in this case
-                        for err in result["exception"].get("errors", []):
-                            if err.get("reason") in TEMPORARY_ERROR_REASONS:
-                                _LOGGER.debug(
-                                    "Temporary error occurred calling Bbox API (%s), retry in %d seconds",
-                                    err.get("reason"),
-                                    retry_delay,
-                                )
-                                await asyncio.sleep(retry_delay)
-                                return await self.async_request(
-                                    path,
-                                    method=method,
-                                    retry=retry - 1,
-                                    retry_delay=retry_delay,
-                                    **kwargs,
-                                )
-                    _LOGGER.error(
-                        "Bbox API throw an exception (domain: %s, code: %s): %s",
-                        result["exception"].get("domain", "unknown"),
-                        result["exception"].get("code", "unknown"),
-                        ", ".join(
-                            [
-                                (
-                                    f"{err.get('name')}: {err.get('reason', 'unknown reason')}"
-                                    if err.get("name")
-                                    else err.get("reason", "unknown reason")
-                                )
-                                for err in result["exception"].get("errors", [])
-                            ]
-                        ),
-                    )
+                    for err in result["exception"].get("errors", []):
+                        if err.get("reason") in TEMPORARY_ERROR_REASONS:
+                            raise TemporaryError(result)
                 raise ServiceNotFoundError(response.status, result) from error
-            raise
+            raise ServiceNotFoundError(response.status, contents) from error
+        except (ClientError, socket.gaierror) as error:
+            raise HttpRequestError(
+                f"Error occurred while communicating with Bbox router. ({error})"
+            ) from error
 
-        return (
-            await response.json()
-            if "application/json" in response.headers.get("Content-Type", "")
-            else await response.text()
-        )
         result = (
             json.loads(contents)
             if "application/json" in response.headers.get("Content-Type", "")
