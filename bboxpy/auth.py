@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import datetime
 import json
 import logging
 import socket
-from typing import Any, cast, Optional
-from datetime import datetime
+from typing import Any, Optional, cast
 
 from aiohttp import ClientError, ClientResponse, ClientResponseError, ClientSession
 
@@ -31,12 +31,14 @@ class BboxRequests:
         timeout: Optional[int] = None,
         session: Optional[ClientSession] = None,
         use_tls: bool = True,
+        verify_ssl: bool = True,
     ) -> None:
         """Initialize."""
         self.password = password
         self._session = session or ClientSession()
         self._timeout = timeout or 120
         self._uri = f"http{'s' if use_tls else ''}://{hostname or 'mabbox.bytel.fr'}/{API_VERSION}"
+        self._verify_ssl = verify_ssl
 
     async def async_request(self, path: str, method: str = "get", **kwargs: Any) -> Any:
         """Request url with method."""
@@ -49,7 +51,9 @@ class BboxRequests:
 
             async with asyncio.timeout(self._timeout):
                 _LOGGER.debug("Request: %s (%s) - %s", url, method, kwargs.get("json"))
-                response = await self._session.request(method, url, **kwargs)
+                response = await self._session.request(
+                    method, url, verify_ssl=self._verify_ssl, **kwargs
+                )
                 contents = (await response.read()).decode("utf8")
         except (asyncio.CancelledError, asyncio.TimeoutError) as error:
             raise TimeoutExceededError(
@@ -57,7 +61,7 @@ class BboxRequests:
             ) from error
         except (ClientError, socket.gaierror) as error:
             raise HttpRequestError(
-                "Error occurred while communicating with Bbox router."
+                f"Error occurred while communicating with Bbox router. ({error})"
             ) from error
 
         try:
