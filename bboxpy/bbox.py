@@ -38,6 +38,10 @@ class Bbox(BboxRequests):
         """Logout."""
         await self.async_request("logout", "post")
 
+    async def async_get_summary(self) -> Any:
+        """Get Bbox state summary."""
+        return await self.async_request("summary")
+
     async def async_close(self) -> None:
         """Close the session."""
         if self._session:
