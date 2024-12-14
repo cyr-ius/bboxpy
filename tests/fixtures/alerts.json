@@ -1,0 +1,30 @@
+[
+  {
+    "alerts": {
+      "list": [
+        {
+          "id": 2,
+          "ident": "ALERT_LAN_API_LOCKED",
+          "param": "192.168.1.153;1807;9025;homeassistant",
+          "first_date": "2024-06-27T09:35:14+0200",
+          "last_date": "2024-12-12T22:18:22+0100",
+          "recovery_date": "2024-06-27T16:01:54+0200",
+          "count": 1863,
+          "total_duration": 18300,
+          "level": "warning"
+        },
+        {
+          "id": 4,
+          "ident": "ALERT_WAN_API_LOCKED",
+          "param": "10.0.0.198;10;40;",
+          "first_date": "2024-12-13T13:52:37+0100",
+          "last_date": "2024-12-13T14:20:26+0100",
+          "recovery_date": "2024-12-13T15:00:26+0100",
+          "count": 8,
+          "total_duration": 2400,
+          "level": "warning"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "dyndns": {
+      "state": 0,
+      "enable": 0,
+      "servercapabilities": [
+        {
+          "name": "dyndns",
+          "support": ["IPv4", "IPv6"],
+          "site": "http://dyn.com/"
+        },
+        {
+          "name": "no-ip",
+          "support": ["IPv4", "IPv6"],
+          "site": "http://www.noip.com/"
+        },
+        {
+          "name": "ovh",
+          "support": ["IPv4"],
+          "site": "https://www.ovh.com/fr/"
+        },
+        {
+          "name": "duiadns",
+          "support": ["IPv4", "IPv6"],
+          "site": "https://www.duiadns.net/"
+        },
+        {
+          "name": "changeip",
+          "support": ["IPv4", "IPv6"],
+          "site": "https://www.changeip.com/"
+        },
+        {
+          "name": "duckdns",
+          "support": ["IPv4"],
+          "site": "https://www.duckdns.org/"
+        }
+      ],
+      "domaincount": 0,
+      "domain": []
+    }
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "wireless": {
+      "ssid": {
+        "id": 24,
+        "stats": {
+          "rx": {
+            "packets": 1194551,
+            "bytes": 234459666,
+            "packetserrors": 0,
+            "packetsdiscards": 23
+          },
+          "tx": {
+            "packets": 2939340,
+            "bytes": "2746911177",
+            "packetserrors": 0,
+            "packetsdiscards": 79405
+          }
+        }
+      }
+    }
+  }
+]

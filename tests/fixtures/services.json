@@ -1,0 +1,88 @@
+[
+  {
+    "services": {
+      "now": "2024-12-13T16: 00: 33+0100",
+      "firewall": {
+        "status": 1,
+        "enable": 1,
+        "nbrules": 1
+      },
+      "dyndns": {
+        "state": 0,
+        "enable": 0,
+        "nbrules": 0
+      },
+      "dhcp": {
+        "status": 2,
+        "enable": 1,
+        "nbrules": 24
+      },
+      "dhcp6": {
+        "enable": 0
+      },
+      "nat": {
+        "status": 1,
+        "enable": 1,
+        "nbrules": 1
+      },
+      "gamermode": {
+        "status": 0,
+        "enable": 0
+      },
+      "upnp": {
+        "igd": {
+          "status": 2,
+          "enable": 1,
+          "nbrules": 0
+        }
+      },
+      "remote": {
+        "proxywol": {
+          "status": 0,
+          "enable": 0,
+          "ip": ""
+        },
+        "admin": {
+          "status": 2,
+          "enable": 1,
+          "port": 4443,
+          "ip": "",
+          "ip6": "",
+          "duration": "",
+          "activable": 1,
+          "ip6address": ": :b997:d1:d2"
+        }
+      },
+      "parentalcontrol": {
+        "enable": 0
+      },
+      "wifischeduler": {
+        "enable": 0
+      },
+      "voipscheduler": {
+        "enable": 0
+      },
+      "notification": {
+        "enable": 0
+      },
+      "hotspot": {
+        "status": 0,
+        "enable": 0
+      },
+      "usb": {
+        "samba": {
+          "status": 0,
+          "enable": 1
+        },
+        "printer": {
+          "status": 0,
+          "enable": 1
+        },
+        "dlna": {
+          "status": 0,
+          "enable": 1
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "wan": {
+      "ftth": {
+        "mode": "1000baseT-FD",
+        "state": "Up"
+      }
+    }
+  }
+]
