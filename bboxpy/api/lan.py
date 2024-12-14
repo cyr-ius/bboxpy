@@ -28,3 +28,7 @@ class Lan:
     async def async_get_device_infos(self) -> Any:
         """Fetch data information."""
         return await self.async_request("hosts/me")
+
+    async def async_get_the_list_of_user_alerts(self) -> Any:
+        """Fetch data information."""
+        return await self.async_request("alerts")
