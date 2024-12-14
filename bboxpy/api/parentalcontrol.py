@@ -20,9 +20,7 @@ class ParentalControl:
     async def async_set_parental_control_service_state(self, enable: bool) -> Any:
         """Set parental control service state."""
         return await self.async_request(
-            "parentalcontrol",
-            method="put",
-            data={"enable": int(enable)},
+            "parentalcontrol", method="put", data={"enable": int(enable)}
         )
 
     async def async_set_device_parental_control_state(
