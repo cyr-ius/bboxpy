@@ -33,9 +33,9 @@ from bboxpy.exceptions import BboxException
 
 async def async_main()
     # Instantiate the Sysbus class using default options.
-    bbox = Bbox(hostname="https://192.168.1.254",pass='xxxxxx')
+    bbox = Bbox(password='xxxxxx')
 
-    # Connect to the livebox with default options.
+    # Connect. (optional)
     await bbox.async_login()
 
     try:
@@ -44,15 +44,21 @@ async def async_main()
     except BboxException as error:
         logger.error(error)
 
-    # Do something useful, rebooting your livebox for example.
+    # Do something useful, rebooting your bbox for example.
     await bbox.device.async_reboot()
 
     # Properly close the session.
     await bbox.async_logout()
+    await bbox.async_close()
+
+    #Call api (raw mode)
+    summary = await bbox.async_raw_request(method="get", path="device/summary")
+    print(summary)
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(async_main())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    asyncio.run(async_main())
 
 ```
