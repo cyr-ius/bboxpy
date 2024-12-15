@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 import inspect
-
 from typing import Any
-
 
 from . import api as Api
 from .auth import BboxRequests
@@ -41,6 +39,12 @@ class Bbox(BboxRequests):
     async def async_get_summary(self) -> Any:
         """Get Bbox state summary."""
         return await self.async_request("summary")
+
+    async def async_raw_request(
+        self, path: str, *, method: str = "GET", payload: dict[str, Any] | None = None
+    ) -> Any:
+        """Request API."""
+        return await self.async_request(method=method, path=path, data=payload)
 
     async def async_close(self) -> None:
         """Close the session."""
