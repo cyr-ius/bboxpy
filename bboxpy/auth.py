@@ -9,7 +9,7 @@ import logging
 import socket
 from typing import Any, Optional, cast
 
-from aiohttp import ClientError, ClientResponse, ClientResponseError, ClientSession
+from aiohttp import ClientError, ClientResponse, ClientResponseError, ClientSession, TCPConnector
 
 from .exceptions import (
     AuthorizationError,
@@ -42,10 +42,14 @@ class BboxRequests:
         session: Optional[ClientSession] = None,
         use_tls: bool = True,
         verify_ssl: bool = True,
+        use_dns_cache: bool = True
     ) -> None:
         """Initialize."""
+
+        conn = TCPConnector(use_dns_cache=use_dns_cache, verify_ssl=verify_ssl, family=socket.AF_INET)
+
         self.password = password
-        self._session = session or ClientSession()
+        self._session = session or ClientSession(connector=conn)
         self._timeout = timeout or 120
         self._uri = f"http{'s' if use_tls else ''}://{hostname or 'mabbox.bytel.fr'}/{API_VERSION}"
         self._verify_ssl = verify_ssl
