@@ -45,17 +45,17 @@ class Wifi:
         """Set wireless."""
         return await self.async_request(
             "wireless",
-            "post",
+            method="put",
             json={"enable": int(radio_enable), "enable": int(wps_enable)},  # noqa
         )
 
-    async def async_wireless_turn_on(self) -> Any:
+    async def async_wireless_turn_on(self) -> None:
         """Turn on wireless."""
-        return await self.async_set_wireless(radio_enable=True, wps_enable=False)
+        await self.async_set_wireless(radio_enable=True, wps_enable=False)
 
-    async def async_wireless_turn_off(self) -> Any:
+    async def async_wireless_turn_off(self) -> None:
         """Turn off wireless."""
-        return await self.async_set_wireless(radio_enable=False, wps_enable=False)
+        await self.async_set_wireless(radio_enable=False, wps_enable=False)
 
     async def async_set_wireless_24(self, data: dict[str, Any]) -> Any:
         """Configure 2.4Ghz."""
