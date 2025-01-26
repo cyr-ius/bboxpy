@@ -46,13 +46,13 @@ class Wifi:
         return await self.async_request(
             "wireless",
             "post",
-            data={"radio.enable": int(radio_enable), "wps.enable": int(wps_enable)},
+            json={"enable": int(radio_enable), "enable": int(wps_enable)},  # noqa
         )
 
     async def async_set_wireless_24(self, data: dict[str, Any]) -> Any:
         """Configure 2.4Ghz."""
         id = self._get_wireless_id("24")
-        return await self.async_request(f"wireless/{id}", method="put", data=data)
+        return await self.async_request(f"wireless/{id}", method="put", json=data)
 
     async def async_set_wireless_24_state(self, enable: bool) -> Any:
         """Turn on/off 2.4Ghz."""
@@ -61,7 +61,7 @@ class Wifi:
     async def async_set_wireless_5(self, data: dict[str, Any]) -> Any:
         """Configure 5Ghz."""
         id = self._get_wireless_id("5")
-        return await self.async_request(f"wireless/{id}", method="put", data=data)
+        return await self.async_request(f"wireless/{id}", method="put", json=data)
 
     async def async_set_wireless_5_state(self, enable: bool) -> Any:
         """Turn on/off 5Ghz."""
@@ -70,7 +70,7 @@ class Wifi:
     async def async_set_wireless_guest(self, data: dict[str, Any]) -> Any:
         """Configure Guest."""
         id = self._get_wireless_id("guest")
-        return await self.async_request(f"wireless/{id}", method="put", data=data)
+        return await self.async_request(f"wireless/{id}", method="put", json=data)
 
     async def async_set_wireless_guest_state(self, enable: bool) -> Any:
         """Turn on/off Guest."""
