@@ -10,6 +10,7 @@ from .services import Services
 from .voip import VOIP
 from .wan import Wan
 from .wifi import Wifi
+from .speedtest import Speedtest
 
 __all__ = [
     "Ddns",
@@ -22,4 +23,5 @@ __all__ = [
     "Wifi",
     "Services",
     "Remote",
+    "Speedtest",
 ]
