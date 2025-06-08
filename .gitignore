@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-example_home.py
 
 # C extensions
 *.so
@@ -130,5 +129,7 @@ dmypy.json
 .pyre/
 
 #perso
-test_home.py
 secrets.yaml
+
+# Code
+*.code-workpace
