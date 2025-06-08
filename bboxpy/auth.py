@@ -7,15 +7,9 @@ from datetime import datetime
 import json
 import logging
 import socket
-from typing import Any, Optional, cast
+from typing import Any, cast
 
-from aiohttp import (
-    ClientError,
-    ClientResponse,
-    ClientResponseError,
-    ClientSession,
-    TCPConnector,
-)
+from aiohttp import ClientError, ClientResponseError, ClientSession, TCPConnector
 
 from .exceptions import (
     AuthorizationError,
@@ -38,14 +32,14 @@ class BboxRequests:
     """Class request."""
 
     _authenticated: bool = False
-    _btoken: Optional[dict[str, Any]] = None
+    _btoken: dict[str, Any] | None = None
 
     def __init__(
         self,
         password: str,
-        hostname: Optional[str] = None,
-        timeout: Optional[int] = None,
-        session: Optional[ClientSession] = None,
+        hostname: str | None = None,
+        timeout: int | None = None,
+        session: ClientSession | None = None,
         use_tls: bool = True,
         verify_ssl: bool = True,
         use_dns_cache: bool = True,
@@ -65,6 +59,8 @@ class BboxRequests:
     @retry(exceptions=TemporaryError, tries=TRIES, delay=DELAY, logger=_LOGGER)
     async def async_request(self, path: str, method: str = "get", **kwargs: Any) -> Any:
         """Request url with method."""
+        contents = ""
+        response = None
         try:
             url = f"{self._uri}/{path}"
 
@@ -74,17 +70,17 @@ class BboxRequests:
 
             async with asyncio.timeout(self._timeout):
                 _LOGGER.debug("Request: %s (%s) - %s", url, method, kwargs.get("json"))
-                response = await self._session.request(
-                    method, url, verify_ssl=self._verify_ssl, **kwargs
-                )
+                response = await self._session.request(method, url, **kwargs)
                 contents = (await response.read()).decode("utf8")
                 response.raise_for_status()
-        except (asyncio.CancelledError, asyncio.TimeoutError) as error:
+        except (asyncio.CancelledError, TimeoutError) as error:
             raise TimeoutExceededError(
                 "Timeout occurred while connecting to Bbox."
             ) from error
         except ClientResponseError as error:
-            if "application/json" in response.headers.get("Content-Type", ""):
+            if response and "application/json" in response.headers.get(
+                "Content-Type", ""
+            ):
                 result = await response.json()
                 if response.status in [401, 429, 403]:
                     raise AuthorizationError(
@@ -100,7 +96,9 @@ class BboxRequests:
                         if err.get("reason") in TEMPORARY_ERROR_REASONS:
                             raise TemporaryError(result) from error
                 raise ServiceNotFoundError(response.status, result) from error
-            raise ServiceNotFoundError(response.status, contents) from error
+            raise ServiceNotFoundError(
+                response.status if response else "", contents
+            ) from error
         except (ClientError, socket.gaierror) as error:
             raise HttpRequestError(
                 f"Error occurred while communicating with Bbox router. ({error})"
@@ -114,16 +112,18 @@ class BboxRequests:
         _LOGGER.debug("Result (%s): %s", response.status, result)
         return result
 
-    async def async_auth(self) -> ClientResponse:
+    async def async_auth(self) -> bool:
         """Request authentication."""
         if not self.password:
             raise RuntimeError("No password provided!")
         if self._authenticated:
-            return True
+            return self._authenticated
         await self.async_request(
             "login", "post", data={"password": self.password, "remember": 1}
         )
         self._authenticated = True
+
+        return self._authenticated
 
     async def async_get_token(self) -> str:
         """Request token."""
