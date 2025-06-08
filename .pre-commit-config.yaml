@@ -41,7 +41,7 @@ repos:
       - id: python-typing-update
         stages: [manual]
         args:
-          - --py311-plus
+          - --py312-plus
           - --force
           - --keep-updates
   - repo: https://github.com/pre-commit/mirrors-mypy
