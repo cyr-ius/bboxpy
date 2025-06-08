@@ -27,6 +27,8 @@ PASSWORD = secrets["PASSWORD"]  # mandatory
 
 
 # mypy: disable-error-code="attr-defined"
+# pylint: disable=E1101
+# pyright: reportAttributeAccessIssue=false
 async def async_main() -> None:
     """Instantiate class."""
     bbox = Bbox(password=PASSWORD)
