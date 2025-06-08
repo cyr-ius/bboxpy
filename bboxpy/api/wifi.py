@@ -46,7 +46,7 @@ class Wifi:
         return await self.async_request(
             "wireless",
             method="put",
-            json={"enable": int(radio_enable), "enable": int(wps_enable)},  # noqa
+            json={"radio.enable": int(radio_enable), "wps.enable": int(wps_enable)},  # noqa
         )
 
     async def async_wireless_turn_on(self) -> None:
