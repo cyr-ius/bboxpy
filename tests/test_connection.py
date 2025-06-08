@@ -98,7 +98,7 @@ async def test_async_request_authorization_error():
     with (
         patch("aiohttp.ClientSession.request", new_callable=mock_error_auth),
         patch("bboxpy.auth.BboxRequests.async_get_token", return_value=TOKEN["token"]),
-        pytest.raises(AuthorizationError, match="Authorization failed \(401\)"),
+        pytest.raises(AuthorizationError, match=r"Authorization failed \(401\)"),
     ):
         bbox = Bbox(password="password")
         await bbox.async_request("test_path")
@@ -146,9 +146,7 @@ async def test_async_get_device_info(bbox_instance) -> None:
 
         assert response == json.loads(bbox_instance)
         mock_request.assert_called_once_with(
-            "get",
-            "https://mabbox.bytel.fr/api/v1/device/summary?btoken=test_token",
-            verify_ssl=True,
+            "get", "https://mabbox.bytel.fr/api/v1/device/summary?btoken=test_token"
         )
 
 
