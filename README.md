@@ -31,7 +31,7 @@ $ python setup.py install
 from bboxpy import Bbox
 from bboxpy.exceptions import BboxException
 
-async def async_main()
+async def async_main():
     # Instantiate the Sysbus class using default options.
     bbox = Bbox(password='xxxxxx')
 
@@ -42,7 +42,7 @@ async def async_main()
         device_info = await bbox.device.async_get_bbox_info()
         print(device_info)
     except BboxException as error:
-        logger.error(error)
+        pass
 
     # Do something useful, rebooting your bbox for example.
     await bbox.device.async_reboot()
