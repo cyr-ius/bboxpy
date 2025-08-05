@@ -3,21 +3,18 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime
 import json
 import logging
 import socket
+from datetime import datetime
 from typing import Any, cast
 
-from aiohttp import ClientError, ClientResponseError, ClientSession, TCPConnector
+from aiohttp import (ClientError, ClientResponseError, ClientSession,
+                     TCPConnector)
 
-from .exceptions import (
-    AuthorizationError,
-    HttpRequestError,
-    ServiceNotFoundError,
-    TemporaryError,
-    TimeoutExceededError,
-)
+from .exceptions import (AuthorizationError, HttpRequestError,
+                         ServiceNotFoundError, TemporaryError,
+                         TimeoutExceededError)
 from .helpers import retry
 
 _LOGGER = logging.getLogger(__name__)
@@ -66,7 +63,10 @@ class BboxRequests:
 
             if path not in ["login", "device/token"]:
                 token = await self.async_get_token()
-                url = f"{url}?btoken={token}"
+                if "?" in url:
+                    url = f"{url}&btoken={token}"
+                else:
+                    url = f"{url}?btoken={token}"
 
             async with asyncio.timeout(self._timeout):
                 _LOGGER.debug("Request: %s (%s) - %s", url, method, kwargs.get("json"))
