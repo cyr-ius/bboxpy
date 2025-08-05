@@ -9,12 +9,15 @@ import socket
 from datetime import datetime
 from typing import Any, cast
 
-from aiohttp import (ClientError, ClientResponseError, ClientSession,
-                     TCPConnector)
+from aiohttp import ClientError, ClientResponseError, ClientSession, TCPConnector
 
-from .exceptions import (AuthorizationError, HttpRequestError,
-                         ServiceNotFoundError, TemporaryError,
-                         TimeoutExceededError)
+from .exceptions import (
+    AuthorizationError,
+    HttpRequestError,
+    ServiceNotFoundError,
+    TemporaryError,
+    TimeoutExceededError,
+)
 from .helpers import retry
 
 _LOGGER = logging.getLogger(__name__)
