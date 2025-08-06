@@ -146,7 +146,9 @@ async def test_async_get_device_info(bbox_instance) -> None:
 
         assert response == json.loads(bbox_instance)
         mock_request.assert_called_once_with(
-            "get", "https://mabbox.bytel.fr/api/v1/device/summary?btoken=test_token"
+            "get",
+            "https://mabbox.bytel.fr/api/v1/device/summary",
+            params={"btoken": "test_token"},
         )
 
 

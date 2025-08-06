@@ -66,7 +66,10 @@ class BboxRequests:
 
             if path not in ["login", "device/token"]:
                 token = await self.async_get_token()
-                url = f"{url}?btoken={token}"
+                if "params" in kwargs:
+                    kwargs["params"].update({"btoken": token})
+                else:
+                    kwargs["params"] = {"btoken": token}
 
             async with asyncio.timeout(self._timeout):
                 _LOGGER.debug("Request: %s (%s) - %s", url, method, kwargs.get("json"))
