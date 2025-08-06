@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Literal
 
 
 class Wifi:
@@ -41,50 +41,31 @@ class Wifi:
         """Fetch Repeater information."""
         return await self.async_request("wireless/repeater")
 
-    async def async_set_wireless(self, radio_enable: bool, wps_enable: bool) -> Any:
-        """Set wireless."""
-        return await self.async_request(
-            "wireless",
-            method="put",
-            json={"radio.enable": int(radio_enable), "wps.enable": int(wps_enable)},  # noqa
-        )
-
-    async def async_wireless_turn_on(self) -> None:
-        """Turn on wireless."""
-        await self.async_set_wireless(radio_enable=True, wps_enable=False)
-
-    async def async_wireless_turn_off(self) -> None:
-        """Turn off wireless."""
-        await self.async_set_wireless(radio_enable=False, wps_enable=False)
-
-    async def async_set_wireless_24(self, data: dict[str, Any]) -> Any:
-        """Configure 2.4Ghz."""
-        id = self._get_wireless_id("24")
-        return await self.async_request(f"wireless/{id}", method="put", json=data)
-
-    async def async_set_wireless_24_state(self, enable: bool) -> Any:
+    async def async_set_wireless_24(self, enable: bool) -> Any:
         """Turn on/off 2.4Ghz."""
-        return await self.async_set_wireless_24(data={"enable": int(enable)})
+        return await self._async_set_wireless(24, enable)
 
-    async def async_set_wireless_5(self, data: dict[str, Any]) -> Any:
-        """Configure 5Ghz."""
-        id = self._get_wireless_id("5")
-        return await self.async_request(f"wireless/{id}", method="put", json=data)
-
-    async def async_set_wireless_5_state(self, enable: bool) -> Any:
+    async def async_set_wireless_5(self, enable: bool) -> Any:
         """Turn on/off 5Ghz."""
-        return await self.async_set_wireless_5(data={"enable": int(enable)})
+        return await self._async_set_wireless(5, enable)
 
-    async def async_set_wireless_guest(self, data: dict[str, Any]) -> Any:
+    async def async_set_wireless_guest(self, enable: bool) -> Any:
         """Configure Guest."""
-        id = self._get_wireless_id("guest")
-        return await self.async_request(f"wireless/{id}", method="put", json=data)
+        return await self._async_set_wireless("guestenable", enable)
 
-    async def async_set_wireless_guest_state(self, enable: bool) -> Any:
-        """Turn on/off Guest."""
-        return await self.async_set_wireless_guest(data={"enable": int(enable)})
-
-    async def _get_wireless_id(self, mode: str) -> Any:
+    async def _async_get_wireless_id(self, mode: str) -> Any:
         """Return wireless id."""
         wireless = await self.async_request("wireless")
         return wireless.get("ssid", {}).get(mode, {}).get("id")
+
+    async def _async_set_wireless(
+        self, wifi_id: Literal[24, 5, "guestenable"], state: bool
+    ) -> None:
+        """Turn on wireless."""
+        if wifi_id:
+            return await self.async_request(
+                f"wireless/{wifi_id}", method="put", params={"radio.enable": int(state)}
+            )
+        return await self.async_request(
+            "wireless", method="put", params={"radio.enable": int(state)}
+        )
