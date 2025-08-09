@@ -41,6 +41,10 @@ class Wifi:
         """Fetch Repeater information."""
         return await self.async_request("wireless/repeater")
 
+    async def async_set_wireless(self, enable: bool) -> Any:
+        """Turn on/off all wireless interfaces."""
+        return await self._async_set_wireless(state=enable)
+
     async def async_set_wireless_24(self, enable: bool) -> Any:
         """Turn on/off 2.4Ghz."""
         return await self._async_set_wireless(24, enable)
@@ -59,7 +63,7 @@ class Wifi:
         return wireless.get("ssid", {}).get(mode, {}).get("id")
 
     async def _async_set_wireless(
-        self, wifi_id: Literal[24, 5, "guestenable"], state: bool
+        self, wifi_id: Literal[24, 5, "guestenable"] | None = None, state: bool = True
     ) -> None:
         """Turn on wireless."""
         if wifi_id:
