@@ -1,0 +1,478 @@
+[
+  {
+    "notification": {
+      "enable": 0,
+      "alerts": [
+        {
+          "id": 1,
+          "enable": 1,
+          "name": "Accès à l'interface d'administration",
+          "events": "EVENT_NOTIFY_LOGIN_LOCAL,EVENT_NOTIFY_LOGIN_LOCAL_FAILED,EVENT_NOTIFY_LOGIN_REMOTE,EVENT_NOTIFY_LOGIN_REMOTE_FAILED",
+          "action": {
+            "type": "Mail",
+            "delay": 0,
+            "mail": {
+              "dests": ""
+            }
+          }
+        },
+        {
+          "id": 2,
+          "enable": 1,
+          "name": "Changement de mot de passe",
+          "events": "EVENT_NOTIFY_USER_CHANGEPWD",
+          "action": {
+            "type": "Mail",
+            "delay": 0,
+            "mail": {
+              "dests": ""
+            }
+          }
+        },
+        {
+          "id": 3,
+          "enable": 1,
+          "name": "Nouveau périphérique connecté",
+          "events": "EVENT_NOTIFY_DEVICE_NEW",
+          "action": {
+            "type": "Mail",
+            "delay": 0,
+            "mail": {
+              "dests": ""
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "category": "Internet",
+          "description": "Le nombre de sessions IP est trop élevé",
+          "humanReadable": "Nombre de sessions IP trop élevé",
+          "name": "EVENT_ALARM_CONNTRACK_ERROR"
+        },
+        {
+          "category": "Internet",
+          "description": "Le nombre de sessions IP est redevenu normal",
+          "humanReadable": "Fin d'alerte sur le nombre de sessions IP",
+          "name": "EVENT_ALARM_CONNTRACK_OK"
+        },
+        {
+          "category": "Système",
+          "description": "Le taux d'utilisation de la mémoire est trop élevé",
+          "humanReadable": "Taux d'utilisation mémoire trop élevé",
+          "name": "EVENT_ALARM_MEMORY_ERROR"
+        },
+        {
+          "category": "Système",
+          "description": "Le taux d'utilisation de la mémoire est redevenu normal",
+          "humanReadable": "Fin de l'alerte d'utilisation mémoire",
+          "name": "EVENT_ALARM_MEMORY_OK"
+        },
+        {
+          "category": "Internet",
+          "description": "Une adresse IP a été obtenue via DHCP",
+          "humanReadable": "Obtention d'adresse IP via DHCP",
+          "name": "EVENT_DHCLIENT_ACK"
+        },
+        {
+          "category": "Internet",
+          "description": "Les tests d'autodiagnostic DNS ont échoué",
+          "humanReadable": "Echec des tests d'autodiagnostic DNS",
+          "name": "EVENT_DIAG_DNS_FAILURE"
+        },
+        {
+          "category": "Internet",
+          "description": "Les tests d'autodiagnostic DNS sont réussis",
+          "humanReadable": "Tests d'autodiagnostic DNS réussis",
+          "name": "EVENT_DIAG_DNS_SUCCESS"
+        },
+        {
+          "category": "Internet",
+          "description": "Les tests d'autodiagnostic d'accès Internet ont échoué",
+          "humanReadable": "Echec des tests d'autodiagnostic d'accès Internet",
+          "name": "EVENT_DIAG_FAILURE"
+        },
+        {
+          "category": "Internet",
+          "description": "Les tests d'autodiagnostic HTTP ont échoué",
+          "humanReadable": "Echec des tests d'autodiagnostic HTTP",
+          "name": "EVENT_DIAG_HTTP_FAILURE"
+        },
+        {
+          "category": "Internet",
+          "description": "Les tests d'autodiagnostic HTTP sont réussis",
+          "humanReadable": "Tests d'autodiagnostic HTTP réussis",
+          "name": "EVENT_DIAG_HTTP_SUCCESS"
+        },
+        {
+          "category": "Internet",
+          "description": "Les tests d'autodiagnostic PING ont échoué",
+          "humanReadable": "Echec des tests d'autodiagnostic PING",
+          "name": "EVENT_DIAG_PING_FAILURE"
+        },
+        {
+          "category": "Internet",
+          "description": "Les tests d'autodiagnostic PING sont réussis",
+          "humanReadable": "Tests d'autodiagnostic PING réussis",
+          "name": "EVENT_DIAG_PING_SUCCESS"
+        },
+        {
+          "category": "Internet",
+          "description": "Les tests d'autodiagnostic d'accès Internet sont réussis",
+          "humanReadable": "Tests d'autodiagnostic d'accès Internet réussis",
+          "name": "EVENT_DIAG_SUCCESS"
+        },
+        {
+          "category": "Internet",
+          "description": "Le delai imparti des tests d'autodiagnostic d'accès Internet a expiré",
+          "humanReadable": "Tests d'autodiagnostic d'accès Internet expirés",
+          "name": "EVENT_DIAG_TIMEOUT"
+        },
+        {
+          "category": "Système",
+          "description": "Le code d'état visible dans l'interface d'administration de la Bbox a changé",
+          "humanReadable": "Changement d'état de la Bbox",
+          "name": "EVENT_DISPLAY_STATE"
+        },
+        {
+          "category": "Réseau local",
+          "description": "Un nouveau périphérique réseau a été détecté",
+          "humanReadable": "Nouveau périphérique réseau connecté",
+          "name": "EVENT_NOTIFY_DEVICE_NEW"
+        },
+        {
+          "category": "Réseau local",
+          "description": "Un périphérique réseau connu s'est connecté",
+          "humanReadable": "Connexion du périphérique",
+          "name": "EVENT_NOTIFY_DEVICE_UP"
+        },
+        {
+          "category": "Réseau local",
+          "description": "Un périphérique réseau s'est déconnecté",
+          "humanReadable": "Déconnexion du périphérique",
+          "name": "EVENT_NOTIFY_DEVICE_DOWN"
+        },
+        {
+          "category": "Réseau local",
+          "description": "Le mot de passe de l'interface d'administration a été changé",
+          "humanReadable": "Changement du mot de passe d'administration",
+          "name": "EVENT_NOTIFY_USER_CHANGEPWD"
+        },
+        {
+          "category": "Réseau local",
+          "description": "Connexion à l'interface d'administration locale",
+          "humanReadable": "Connexion à l'interface d'administration locale",
+          "name": "EVENT_NOTIFY_LOGIN_LOCAL"
+        },
+        {
+          "category": "Réseau local",
+          "description": "Tentative de connexion infructueuse à l'interface d'administration locale",
+          "humanReadable": "Tentative de connexion infructueuse à l'interface d'administration locale",
+          "name": "EVENT_NOTIFY_LOGIN_LOCAL_FAILED"
+        },
+        {
+          "category": "Accès distant",
+          "description": "Connexion à l'interface d'administration distante",
+          "humanReadable": "Connexion à l'interface d'administration distante",
+          "name": "EVENT_NOTIFY_LOGIN_REMOTE"
+        },
+        {
+          "category": "Accès distant",
+          "description": "Tentative de connexion infructueuse à l'interface d'administration distante",
+          "humanReadable": "Tentative de connexion infructueuse à l'interface d'administration distante",
+          "name": "EVENT_NOTIFY_LOGIN_REMOTE_FAILED"
+        },
+        {
+          "category": "Accès distant",
+          "description": "Connexion à l'interface d'administration par le service client Bouygues Telecom",
+          "humanReadable": "Connexion à l'interface d'administration par le service client Bouygues Telecom",
+          "name": "EVENT_NOTIFY_LOGIN_CDC"
+        },
+        {
+          "category": "Système",
+          "description": "Le Wi-Fi de la Bbox a été activé",
+          "humanReadable": "Wi-Fi activé",
+          "name": "EVENT_NOTIFY_WIFI_UP"
+        },
+        {
+          "category": "Système",
+          "description": "Le Wi-Fi de la Bbox a été désactivé",
+          "humanReadable": "Wi-Fi désactivé",
+          "name": "EVENT_NOTIFY_WIFI_DOWN"
+        },
+        {
+          "category": "Système",
+          "description": "Le nom du réseau Wi-Fi 2.4 GHz (SSID) a été changé",
+          "humanReadable": "Changement de nom du réseau Wi-Fi 2.4 GHz",
+          "name": "EVENT_NOTIFY_WIFI_SSID_24"
+        },
+        {
+          "category": "Système",
+          "description": "Le nom du réseau Wi-Fi 5 GHz (SSID) a été changé",
+          "humanReadable": "Changement de nom du réseau Wi-Fi 5 GHz",
+          "name": "EVENT_NOTIFY_WIFI_SSID_5"
+        },
+        {
+          "category": "Système",
+          "description": "Le mot de passe Wi-Fi 2.4 GHz a été changé",
+          "humanReadable": "Changement du mot de passe Wi-Fi 2.4 GHz",
+          "name": "EVENT_NOTIFY_WIFI_PWD_24"
+        },
+        {
+          "category": "Système",
+          "description": "Le mot de passe Wi-Fi 5 GHz a été changé",
+          "humanReadable": "Changement du mot de passe Wi-Fi 5 GHz",
+          "name": "EVENT_NOTIFY_WIFI_PWD_5"
+        },
+        {
+          "category": "Utilisation du réseau",
+          "description": "La gestion des plages horaires Wi-Fi a été activée",
+          "humanReadable": "Gestion des plages horaires Wi-Fi activée",
+          "name": "EVENT_SCHEDULER_WIFI_ENABLE"
+        },
+        {
+          "category": "Utilisation du réseau",
+          "description": "La gestion des plages horaires Wi-Fi a été désactivée",
+          "humanReadable": "Gestion des plages horaires Wi-Fi désactivée",
+          "name": "EVENT_SCHEDULER_WIFI_DISABLE"
+        },
+        {
+          "category": "Système",
+          "description": "La date et l'heure de la Bbox ont été synchronisées depuis un serveur NTP",
+          "humanReadable": "Synchronisation de la date et l'heure",
+          "name": "EVENT_NTP_SYNCHRONIZATION"
+        },
+        {
+          "category": "Internet",
+          "description": "L'interface PPP est disponible",
+          "humanReadable": "Obtention d'adresse IP via PPP",
+          "name": "EVENT_PPP_BOUND"
+        },
+        {
+          "category": "Utilisation du réseau",
+          "description": "La période de contrôle d'accès est finie",
+          "humanReadable": "Contrôle d'accès stoppé",
+          "name": "EVENT_SCHEDULER_PARENTAL_STOPPING"
+        },
+        {
+          "category": "Système",
+          "description": "La mise à jour du logiciel de la Bbox a échouée (firmware opérationnel)",
+          "humanReadable": "Echec de la mise à jour du logiciel de la Bbox",
+          "name": "EVENT_UPGRADE_MAIN_FINISH_FAILED"
+        },
+        {
+          "category": "Système",
+          "description": "La mise à jour du logiciel de la Bbox est réussie (firmware opérationnel)",
+          "humanReadable": "Mise à jour du logiciel de la Bbox réussie",
+          "name": "EVENT_UPGRADE_MAIN_FINISH"
+        },
+        {
+          "category": "Système",
+          "description": "La mise à jour du logiciel de votre Bbox a commencé",
+          "humanReadable": "Mise à jour du logiciel de la Bbox",
+          "name": "EVENT_UPGRADE_START"
+        },
+        {
+          "category": "Système",
+          "description": "Une imprimante USB a été branchée",
+          "humanReadable": "Connexion d'une imprimante USB",
+          "name": "EVENT_USB_PRINTER_PLUG"
+        },
+        {
+          "category": "Système",
+          "description": "Une imprimante USB a été debranchée",
+          "humanReadable": "Déconnexion d'une imprimante USB",
+          "name": "EVENT_USB_PRINTER_UNPLUG"
+        },
+        {
+          "category": "Système",
+          "description": "Une partition d'une clé ou d'un disque USB a été montée",
+          "humanReadable": "Partition montée",
+          "name": "EVENT_USB_STORAGE_MOUNT"
+        },
+        {
+          "category": "Système",
+          "description": "Un périphérique de stockage USB a été branché",
+          "humanReadable": "Branchement d'un périphérique de stockage USB",
+          "name": "EVENT_USB_STORAGE_PLUG"
+        },
+        {
+          "category": "Système",
+          "description": "Une partition d'une clé ou d'un disque USB a été démontée",
+          "humanReadable": "Démontage de la partition",
+          "name": "EVENT_USB_STORAGE_UMOUNT"
+        },
+        {
+          "category": "Système",
+          "description": "Un périphérique de stockage USB a été débranché",
+          "humanReadable": "Déconnexion d'un périphérique de stockage USB",
+          "name": "EVENT_USB_STORAGE_UNPLUG"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Le test d'écho est démarré",
+          "humanReadable": "Test d'écho démarré",
+          "name": "EVENT_VOIP_DIAG_ECHOTEST_ON"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Le test d'écho est arrêté",
+          "humanReadable": "Test d'écho arrêté",
+          "name": "EVENT_VOIP_DIAG_ECHOTEST_OFF"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Le test de sonnerie est démarré",
+          "humanReadable": "Test de sonnerie démarré",
+          "name": "EVENT_VOIP_DIAG_RINGTEST_ON"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Le test de sonnerie est arrêté",
+          "humanReadable": "Test de sonnerie arrêté",
+          "name": "EVENT_VOIP_DIAG_RINGTEST_OFF"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Un ou plusieurs nouveaux messages sont disponibles sur la boîte vocale",
+          "humanReadable": "Message vocal en attente",
+          "name": "EVENT_VOIP_MWI"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Le service de téléphonie est disponible",
+          "humanReadable": "Téléphonie disponible",
+          "name": "EVENT_VOIP_REGISTERED"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Le service de téléphonie est indisponible",
+          "humanReadable": "Téléphonie indisponible",
+          "name": "EVENT_VOIP_UNREGISTERED"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Le combiné du téléphone a été décroché",
+          "humanReadable": "Téléphone décroché",
+          "name": "EVENT_VOIP_OFFHOOK"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Le combiné du téléphone a été raccroché",
+          "humanReadable": "Téléphone raccroché",
+          "name": "EVENT_VOIP_ONHOOK"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Sonnerie en cours",
+          "humanReadable": "Appel entrant",
+          "name": "EVENT_VOIP_INCOMING_CALL_RINGING"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Appel entrant non répondu",
+          "humanReadable": "Appel manqué",
+          "name": "EVENT_VOIP_INCOMING_CALL_MISSED"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Appel entrant en cours",
+          "humanReadable": "Appel entrant en cours",
+          "name": "EVENT_VOIP_INCOMING_CALL_START"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Fin de l'appel entrant en cours",
+          "humanReadable": "Fin de l'appel entrant",
+          "name": "EVENT_VOIP_INCOMING_CALL_END"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Appel sortant en cours",
+          "humanReadable": "Appel sortant en cours",
+          "name": "EVENT_VOIP_OUTGOING_CALL_START"
+        },
+        {
+          "category": "Téléphone",
+          "description": "Fin de l'appel sortant en cours",
+          "humanReadable": "Fin de l'appel sortant",
+          "name": "EVENT_VOIP_OUTGOING_CALL_END"
+        },
+        {
+          "category": "Internet",
+          "description": "L'accès Internet est indisponible (WAN)",
+          "humanReadable": "Accès Internet indisponible",
+          "name": "EVENT_WAN_DOWN"
+        },
+        {
+          "category": "Internet",
+          "description": "Une route a été ajoutée sur l'interface WAN",
+          "humanReadable": "Ajout d'une route",
+          "name": "EVENT_WAN_ROUTE_ADDED"
+        },
+        {
+          "category": "Internet",
+          "description": "Une route a été supprimée sur l'interface WAN",
+          "humanReadable": "Retrait d'une route",
+          "name": "EVENT_WAN_ROUTE_REMOVED"
+        },
+        {
+          "category": "Internet",
+          "description": "L'accès Internet est disponible (WAN)",
+          "humanReadable": "Accès Internet disponible",
+          "name": "EVENT_WAN_UP"
+        },
+        {
+          "category": "Utilisation du réseau",
+          "description": "Une règle de NAT/PAT via UPnP IGD a été ajoutée",
+          "humanReadable": "Règle de NAT/PAT ajoutée via UPnP",
+          "name": "EVENT_WAN_UPNP_ADD"
+        },
+        {
+          "category": "Utilisation du réseau",
+          "description": "Une règle de NAT/PAT via UPnP IGD a été supprimée",
+          "humanReadable": "Règle de NAT/PAT supprimée via UPnP",
+          "name": "EVENT_WAN_UPNP_REMOVE"
+        },
+        {
+          "category": "Utilisation du réseau",
+          "description": "Le contrôle d'accès a été activé",
+          "humanReadable": "Contrôle d'accès activé",
+          "name": "EVENT_SCHEDULER_PARENTAL_ENABLE"
+        },
+        {
+          "category": "Utilisation du réseau",
+          "description": "Le contrôle d'accès a été désactivé",
+          "humanReadable": "Contrôle d'accès désactivé",
+          "name": "EVENT_SCHEDULER_PARENTAL_DISABLE"
+        },
+        {
+          "category": "Utilisation du réseau",
+          "description": "La période de contrôle d'accès est commencée",
+          "humanReadable": "Contrôle d'accès en cours",
+          "name": "EVENT_SCHEDULER_PARENTAL_RUNNING"
+        },
+        {
+          "category": "Réseau local",
+          "description": "La connexion à l'interface d'administration locale est bloquée",
+          "humanReadable": "Blocage connexion à l'interface d'administration locale",
+          "name": "EVENT_NOTIFY_LOGIN_LOCAL_LOCKED"
+        },
+        {
+          "category": "Accès distant",
+          "description": "La connexion à l'interface d'administration distante est bloquée",
+          "humanReadable": "Blocage connexion à l'interface d'administration distante",
+          "name": "EVENT_NOTIFY_LOGIN_REMOTE_LOCKED"
+        }
+      ],
+      "contacts": [
+        {
+          "id": 1,
+          "enable": 1,
+          "mail": "xxxxx.yyyyyyyyy@bbox.fr",
+          "name": "Votre email Bbox associé à votre compte"
+        }
+      ]
+    }
+  }
+]

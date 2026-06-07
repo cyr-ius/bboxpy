@@ -29,6 +29,12 @@ class Wifi:
         """Fetch WPS information."""
         return await self.async_request("wireless/wps")
 
+    async def async_set_wps(self, enable: bool) -> Any:
+        """Turn on/off all wireless interfaces."""
+        return await self.async_request(
+            "wireless", method="put", params={"wps.enable": int(enable)}
+        )
+
     async def async_on_wps(self) -> Any:
         """Enable WPS Session."""
         return await self.async_request("wireless/wps", "post")
