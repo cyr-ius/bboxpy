@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name        = "bboxpy"
 dynamic     = ["version"]
-license     = {text = "GPL-3"}
+license     = "GPL-3.0-or-later"
 description = "Fetch data from bouygues bbox"
 readme      = "README.md"
 authors     = [
@@ -15,7 +15,6 @@ keywords    = ["bouygues", "async", "bbox"]
 classifiers = [
     "Programming Language :: Python",
     "Development Status :: 5 - Production/Stable",
-    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -31,6 +30,12 @@ dependencies    = [
     "aiohttp>=3.8.1",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "prek",
+    "ruff",
+]
+
 [project.urls]
 Homepage = "https://github.com/cyr-ius/bboxpy"
 
@@ -38,8 +43,9 @@ Homepage = "https://github.com/cyr-ius/bboxpy"
 
 [tool.setuptools]
 platforms = ["any"]
-zip-safe  = false
-include-package-data = true
+
+[tool.setuptools.packages.find]
+exclude = ["node_modules*"]
 
 [tool.ruff.lint.flake8-pytest-style]
 fixture-parentheses = false
