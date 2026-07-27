@@ -10,10 +10,10 @@ from .exceptions import (
 )
 
 __all__ = [
+    "AuthorizationError",
     "Bbox",
     "BboxException",
-    "AuthorizationError",
-    "TimeoutExceededError",
     "HttpRequestError",
     "ServiceNotFoundError",
+    "TimeoutExceededError",
 ]
