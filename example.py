@@ -1,9 +1,10 @@
 """This example can be run safely as it won't change anything in your box configuration."""
 
 import asyncio
+from collections.abc import Callable
 from contextlib import suppress
 import logging
-from typing import Any, Callable
+from typing import Any
 
 import yaml  # type: ignore
 

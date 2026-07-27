@@ -7,21 +7,21 @@ from .lan import Lan
 from .parentalcontrol import ParentalControl
 from .remote import Remote
 from .services import Services
+from .speedtest import Speedtest
 from .voip import VOIP
 from .wan import Wan
 from .wifi import Wifi
-from .speedtest import Speedtest
 
 __all__ = [
+    "VOIP",
     "Ddns",
     "Device",
     "IPTv",
     "Lan",
     "ParentalControl",
-    "VOIP",
+    "Remote",
+    "Services",
+    "Speedtest",
     "Wan",
     "Wifi",
-    "Services",
-    "Remote",
-    "Speedtest",
 ]
