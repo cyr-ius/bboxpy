@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import inspect
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from . import api as Api
 from .auth import BboxRequests
 from .exceptions import AuthorizationError, BboxException
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
 
 
 class Bbox(BboxRequests):
@@ -51,7 +54,7 @@ class Bbox(BboxRequests):
         if self._session:
             await self._session.close()
 
-    async def __aenter__(self) -> Bbox:
+    async def __aenter__(self) -> Self:
         """Asynchronous enter."""
         return self
 
