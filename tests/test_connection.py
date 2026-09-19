@@ -164,3 +164,32 @@ async def test_async_request_retry():
         bbox = Bbox(password="test_password")
         with pytest.raises(TimeoutExceededError):
             await bbox.async_request("test_path")
+
+
+@pytest.mark.asyncio
+async def test_session_keeps_cookie_for_ip_host() -> None:
+    """Test the authentication cookie is kept when the host is an IP address."""
+    from aiohttp import web
+    from aiohttp.test_utils import TestServer
+
+    async def login(_request: web.Request) -> web.Response:
+        response = web.json_response({})
+        response.set_cookie("BBOXAUTH", "token")
+        return response
+
+    async def check(request: web.Request) -> web.Response:
+        return web.json_response({"cookie": request.cookies.get("BBOXAUTH")})
+
+    app = web.Application()
+    app.router.add_post("/login", login)
+    app.router.add_get("/check", check)
+
+    async with TestServer(app, host="127.0.0.1") as server:
+        bbox = Bbox(password="password")
+        try:
+            base = f"http://127.0.0.1:{server.port}"
+            await bbox._session.post(f"{base}/login")
+            response = await bbox._session.get(f"{base}/check")
+            assert (await response.json())["cookie"] == "token"
+        finally:
+            await bbox.async_close()

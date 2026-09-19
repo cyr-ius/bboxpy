@@ -9,7 +9,13 @@ import logging
 import socket
 from typing import Any, cast
 
-from aiohttp import ClientError, ClientResponseError, ClientSession, TCPConnector
+from aiohttp import (
+    ClientError,
+    ClientResponseError,
+    ClientSession,
+    CookieJar,
+    TCPConnector,
+)
 
 from .exceptions import (
     AuthorizationError,
@@ -51,7 +57,11 @@ class BboxRequests:
         )
 
         self.password = password
-        self._session = session or ClientSession(connector=conn)
+        # By default aiohttp drops cookies set by an IP address host, which breaks
+        # the authentication cookie when the Bbox is reached by its IP (ex: 192.168.1.254)
+        self._session = session or ClientSession(
+            connector=conn, cookie_jar=CookieJar(unsafe=True)
+        )
         self._timeout = timeout or 120
         self._uri = f"http{'s' if use_tls else ''}://{hostname or 'mabbox.bytel.fr'}/{API_VERSION}"
         self._verify_ssl = verify_ssl
