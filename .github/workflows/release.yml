@@ -6,17 +6,17 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       # To use this repository's private action, you must check out the repository
-      - name: Checkout
+      - name: 📥 Checkout the repository
         uses: actions/checkout@v7
+
       - name: Generate changelog
         id: changelog
         uses: metcalfc/changelog-generator@v5.0.1
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create Release
         uses: softprops/action-gh-release@v3
         with:
@@ -24,4 +24,4 @@ jobs:
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: ${{ contains(github.ref_name, '-') }}
-          token: ${{ secrets.RELEASE_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
