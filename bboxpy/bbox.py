@@ -10,7 +10,7 @@ from .auth import BboxRequests
 from .exceptions import AuthorizationError, BboxException
 
 if TYPE_CHECKING:
-    from typing_extensions import Self
+    from typing import Self
 
 
 class Bbox(BboxRequests):

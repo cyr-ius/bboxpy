@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 import json
 from unittest.mock import AsyncMock, patch
 
@@ -16,11 +16,11 @@ from . import load_fixture, mock_error, mock_error_auth, mock_json
 
 TOKEN = {
     "token": "test_token",
-    "expires": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
+    "expires": (datetime.now(UTC) + timedelta(hours=1)).isoformat(),
 }
 OLD_TOKEN = {
     "token": "test_token",
-    "expires": (datetime.now(timezone.utc) - timedelta(days=1)).isoformat(),
+    "expires": (datetime.now(UTC) - timedelta(days=1)).isoformat(),
 }
 
 
